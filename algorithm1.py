@@ -107,7 +107,7 @@ def remove_false_alarms(mask, orig_image, save_path):
             rois.append(roi)
             
     if save_path is not None:
-        cv2.imwrite(save_path, output_image)
+        cv2.imwrite(save_path, orig_image)
     
     return output_image, rois
 
