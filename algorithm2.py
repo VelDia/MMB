@@ -1,16 +1,17 @@
-import cv2
 import os
+import cv2
+import math
 import numpy as np
 from sklearn.utils.extmath import randomized_svd
 from scipy.linalg import svd
 
 # Calculate the number of observation matrices
-def calc_observ_matrix(frames):
+def calc_num_observ_matrix(frames):
     M = len(frames) 
     L = 4
     f = 10
 
-    N = M/(L * f)
+    N = math.ceil(M/(L * f))
     return N
 
 # Estimate the current background model based on LRMC (used test_LRMC_paper.py)
