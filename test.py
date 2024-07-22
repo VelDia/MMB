@@ -17,8 +17,10 @@ foreground_path = os.path.join(opath_im, 'foreground')
 background_path = os.path.join(opath_im, 'background')
 mask_alg1_path = os.path.join(opath_im, 'masks_alg1')
 mask_alg2_path = os.path.join(opath_im, 'masks_alg2')
+mask_ult_path = os.path.join(opath_im, 'masks_ult')
 os.makedirs(mask_alg1_path, exist_ok=True)
 os.makedirs(mask_alg2_path, exist_ok=True)
+os.makedirs(mask_ult_path, exist_ok=True)
 os.makedirs(foreground_path, exist_ok=True)
 os.makedirs(background_path, exist_ok=True)
 os.makedirs(opath_im, exist_ok=True)
@@ -76,7 +78,8 @@ with open(save_preds_p2, 'w', newline='') as file:
     # print(len(frames[N-N:N]))
     # foreground_images = [0] * m
     for i in range(N, m, N):
-        V = construct_data_matrix(frames[i-N:i])
+        iter = i-N
+        V = construct_data_matrix(frames[iter:i])
         rank = estimate_rank(V)
         B = fRMC(V, rank)
         # background_images = [B[:, i].reshape(frames[0].shape) for i in range(B.shape[1])]
@@ -99,30 +102,33 @@ with open(save_preds_p2, 'w', newline='') as file:
             # Perform morphological operations
             morphed_image = morph_operations(binary_image)
             # final_mask, rois_2 = saving_roi_from_mask(morphed_image, i-N+j)
-            cv2.imwrite(os.path.join(foreground_path, f'fg_img_{j}.png'), foreground)
-            cv2.imwrite(os.path.join(background_path, f'bg_img_{j}.png'), background)
+            cv2.imwrite(os.path.join(foreground_path, f'fg_img_{iter+j}.png'), foreground)
+            cv2.imwrite(os.path.join(background_path, f'bg_img_{iter+j}.png'), background)
         # for morphed_image in morphed_images:
-            result_image2, rois_2, new_mask2 = remove_false_alarms_one_image(morphed_image, frames[i-N+j], i-N+j)
-            cv2.imwrite(os.path.join(mask_alg2_path, f'mask2_{j}.png'), new_mask2)
+            result_image2, rois_2, new_mask2 = remove_false_alarms_one_image(morphed_image, frames[iter+j], iter+j)
+            cv2.imwrite(os.path.join(mask_alg2_path, f'mask2_{iter+j}.png'), new_mask2)
             roiss2.append(rois_2)
             writer2.writerows(rois_2)
             masks2.append(new_mask2) 
             video2.write(result_image2)
         video2.release()
 
-# # Perform element-wise multiplication of masks
-# masks = np.array(masks)
-# masks2 = np.array(masks2)
-# length = len(masks) if len(masks) >= len(masks2) else len(masks2)
+# Perform element-wise multiplication of masks
+masks = np.array(masks)
+masks2 = np.array(masks2)
+length = len(masks) if len(masks) >= len(masks2) else len(masks2)
+masks_ult = np.array()
 
-# for i in range()
-# masks_ult = 
-
-# # Algorithm 3 (Motion Trajectory-based False Alarm Filter)
-# # Parameters
-# pipeline_length = 5
-# pipeline_size = (7, 7)
-# detection_threshold = 3
-# frame_skip_threshold = 4
-# distance_threshold = 7
+for i in range(length):
+    res = masks[i] * masks2[i]
+    res_bound = np.where(res > 0, 255, 0)
+    masks_ult.append(res_bound)
+    cv2.imwrite(os.path.join(mask_ult_path, f'mask_ult{i}.png'), new_mask2)
+# Algorithm 3 (Motion Trajectory-based False Alarm Filter)
+# Parameters
+pipeline_length = 5
+pipeline_size = (7, 7)
+detection_threshold = 3
+frame_skip_threshold = 4
+distance_threshold = 7
 
