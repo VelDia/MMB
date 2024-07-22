@@ -51,7 +51,7 @@ def fRMC(V, rank, max_iter=100, tol=1e-5):
         
     return B
 
-def saving_roi_from_mask(mask, num_im):
+def saving_roi_from_mask(mask):
     # min_area = 5
     # max_area = 80
     # min_aspect_ratio = 1.0
@@ -77,12 +77,12 @@ def saving_roi_from_mask(mask, num_im):
         if min_area <= area <= max_area and min_aspect_ratio <= aspect_ratio <= max_aspect_ratio:
 
             # Draw the component on the new mask
-            new_mask[labels == label] = 255
+            # new_mask[labels == label] = 255
 
             # Append ROI to list
-            rois.append([int(num_im), int(label), int(x), int(y), int(height), int(width)]) #append coordinates as they appear in (ground truth) gt.txt
+            rois.append([int(x), int(y), int(x+height), int(y+width)]) #append coordinates as they appear in (ground truth) gt.txt
         # print(rois)
         
     
     # cv2.destroyAllWindows()
-    return new_mask, rois
+    return rois
