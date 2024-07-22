@@ -39,6 +39,7 @@
 #         return False  # Not a True Positive
 
 import csv
+import numpy as np
 def calculate_iou(box1, box2):
     x1_topleft, y1_topleft, x1_bottomright, y1_bottomright = box1
     x2_topleft, y2_topleft, x2_bottomright, y2_bottomright = box2
@@ -73,12 +74,12 @@ def calculate_true_positives(predictions, ground_truths, threshold=0.5):
     used_gt_boxes = [False] * len(ground_truths)  # Track which ground truth boxes have been used
 
     for pred_box in predictions:
-        matched = False
+        # matched = False
         for i, gt_box in enumerate(ground_truths):
             if not used_gt_boxes[i] and is_true_positive(pred_box, gt_box, threshold):
                 true_positives += 1
                 used_gt_boxes[i] = True  # Mark this ground truth box as used
-                matched = True
+                # matched = True
                 break  # Move to the next prediction
 
     return true_positives
@@ -106,14 +107,21 @@ def read_csv_file(file_path):
         reader = csv.reader(file)
         next(reader)  # Skip the header row
         i = 0
+        bb_img =[]
         for row in reader:
-            bounding_boxes.append([])
-            j, _, xmin, ymin, height, width, _, _ = map(float, row)
+
+            j, _, xmin, ymin, height, width, _, _, _, _ = map(float, row)
             if i != j:
-                bounding_boxes.append([])
+                bounding_boxes.append(bb_img)
+                bb_img=[]
                 i = j
             xmax = xmin + height
             ymax = ymin + width
-            bounding_boxes.append([xmin, ymin, xmax, ymax])
+            
+            bb_img.append([xmin, ymin, xmax, ymax])
             
     return bounding_boxes
+
+gt_path = 'mot/car/001/gt/gt.txt'
+ground_truths = read_csv_file(gt_path)
+print(ground_truths)
