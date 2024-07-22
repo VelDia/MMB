@@ -51,7 +51,38 @@ def fRMC(V, rank, max_iter=100, tol=1e-5):
         
     return B
 
+def saving_roi_from_mask(mask, num_im):
+    # min_area = 5
+    # max_area = 80
+    # min_aspect_ratio = 1.0
+    # max_aspect_ratio = 6.0
+    min_area = 4
+    max_area = 324
+    min_aspect_ratio = 0.25
+    max_aspect_ratio = 6.0
 
-def output_candidate_motion_pixels(foreground, output_folder, idx):
-    output_path = os.path.join(output_folder, f'foreground_{idx}.png')
-    cv2.imwrite(output_path, foreground.astype(np.uint8) * 255)
+    # List to store extracted ROIs
+    rois = []
+    new_mask = np.zeros_like(mask, dtype=np.uint8)
+
+    # Find connected components
+    num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
+
+    for label in range(1, num_labels):
+        area = stats[label, cv2.CC_STAT_AREA]
+        x, y, width, height = stats[label, cv2.CC_STAT_LEFT], stats[label, cv2.CC_STAT_TOP], stats[label, cv2.CC_STAT_WIDTH], stats[label, cv2.CC_STAT_HEIGHT]
+        aspect_ratio = width / height if height != 0 else 0  # Calculate aspect ratio
+
+        # Check if component meets area and aspect ratio criteria
+        if min_area <= area <= max_area and min_aspect_ratio <= aspect_ratio <= max_aspect_ratio:
+
+            # Draw the component on the new mask
+            new_mask[labels == label] = 255
+
+            # Append ROI to list
+            rois.append([int(num_im), int(label), int(x), int(y), int(height), int(width)]) #append coordinates as they appear in (ground truth) gt.txt
+        # print(rois)
+        
+    
+    # cv2.destroyAllWindows()
+    return new_mask, rois
