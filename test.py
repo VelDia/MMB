@@ -1,5 +1,6 @@
 from algorithm1 import calc_difference_mask, remove_false_alarms_one_image, convert_to_binary_mask, morph_operations
 from algorithm2 import construct_data_matrix, estimate_rank, fRMC, calc_num_observ_matrix, saving_roi_from_mask
+import numpy as np
 import math
 import cv2
 import os
@@ -18,6 +19,8 @@ mask_alg1_path = os.path.join(opath_im, 'masks_alg1')
 mask_alg2_path = os.path.join(opath_im, 'masks_alg2')
 os.makedirs(mask_alg1_path, exist_ok=True)
 os.makedirs(mask_alg2_path, exist_ok=True)
+os.makedirs(foreground_path, exist_ok=True)
+os.makedirs(background_path, exist_ok=True)
 os.makedirs(opath_im, exist_ok=True)
 os.makedirs(video_path, exist_ok=True)
 video1_path = os.path.join(video_path, 'video1.mp4')
@@ -34,31 +37,31 @@ print(m)
 # # save the video
 width, height, _ = frames[0].shape
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-# video = cv2.VideoWriter(video1_path, fourcc, 10, (width, height))
+video = cv2.VideoWriter(video1_path, fourcc, 10, (width, height))
 
-# masks = []
-# roiss = []
+masks = []
+roiss = []
 
-# with open(save_preds_p1, 'w', newline='') as file:
-#     writer = csv.writer(file)
+with open(save_preds_p1, 'w', newline='') as file:
+    writer = csv.writer(file)
 
-#     # Algorithm #1
-#     for i in range(1, m-2):
-#         im_path_list = images_path[i:i+3]
-#         # print(im_path_list)
-#         image = cv2.imread(im_path_list[0], cv2.IMREAD_COLOR)
+    # Algorithm #1
+    for i in range(1, m-2):
+        im_path_list = images_path[i:i+3]
+        # print(im_path_list)
+        image = cv2.imread(im_path_list[0], cv2.IMREAD_COLOR)
 
-#         diff, mask = calc_difference_mask(im_path_list)
-#         masks.append(mask)
+        diff, mask = calc_difference_mask(im_path_list)
+        masks.append(mask)
 
-#         mask = morph_operations(mask)
-#         result_image, rois, new_mask = remove_false_alarms_one_image(mask, image, i)
-#         cv2.imwrite(os.path.join(mask_alg1_path, f'mask_{i}.png'), new_mask)
-#         roiss.append(rois)
-#         writer.writerows(rois)
-#         masks.append(new_mask) 
-#         video.write(result_image)
-#     video.release()
+        mask = morph_operations(mask)
+        result_image, rois, new_mask = remove_false_alarms_one_image(mask, image, i)
+        cv2.imwrite(os.path.join(mask_alg1_path, f'mask_{i}.png'), new_mask)
+        roiss.append(rois)
+        writer.writerows(rois)
+        masks.append(new_mask) 
+        video.write(result_image)
+    video.release()
 
 video2 = cv2.VideoWriter(video2_path, fourcc, 10, (width, height))
 masks2 = []
@@ -71,12 +74,12 @@ with open(save_preds_p2, 'w', newline='') as file:
     N = calc_num_observ_matrix(frames)
     print(N)
     # print(len(frames[N-N:N]))
-    foreground_images = [0] * m
+    # foreground_images = [0] * m
     for i in range(N, m, N):
         V = construct_data_matrix(frames[i-N:i])
         rank = estimate_rank(V)
         B = fRMC(V, rank)
-        background_images = [B[:, i].reshape(frames[0].shape) for i in range(B.shape[1])]
+        # background_images = [B[:, i].reshape(frames[0].shape) for i in range(B.shape[1])]
 
         # for k in range(len(background_images)):
         #     temp_img = frames[k] - background_images[k]
@@ -85,9 +88,6 @@ with open(save_preds_p2, 'w', newline='') as file:
         #     # B = convert_to_binary_mask(B)
         #     binary_images = [convert_to_binary_mask(foreground) for foreground in foreground_images]
         #     morphed_images = [morph_operations(binary_image) for binary_image in binary_images]
-        #     print()
-        print(B.shape[1])
-        print(len(background_images))
 
         for j in range(B.shape[1]):
             background = B[:, j].reshape(frames[0].shape)
@@ -101,11 +101,28 @@ with open(save_preds_p2, 'w', newline='') as file:
             # final_mask, rois_2 = saving_roi_from_mask(morphed_image, i-N+j)
             cv2.imwrite(os.path.join(foreground_path, f'fg_img_{j}.png'), foreground)
             cv2.imwrite(os.path.join(background_path, f'bg_img_{j}.png'), background)
-            
-            result_image2, rois_2, new_mask2 = remove_false_alarms_one_image(morphed_image, frames[i-N+j], i)
+        # for morphed_image in morphed_images:
+            result_image2, rois_2, new_mask2 = remove_false_alarms_one_image(morphed_image, frames[i-N+j], i-N+j)
             cv2.imwrite(os.path.join(mask_alg2_path, f'mask2_{j}.png'), new_mask2)
             roiss2.append(rois_2)
             writer2.writerows(rois_2)
             masks2.append(new_mask2) 
             video2.write(result_image2)
         video2.release()
+
+# # Perform element-wise multiplication of masks
+# masks = np.array(masks)
+# masks2 = np.array(masks2)
+# length = len(masks) if len(masks) >= len(masks2) else len(masks2)
+
+# for i in range()
+# masks_ult = 
+
+# # Algorithm 3 (Motion Trajectory-based False Alarm Filter)
+# # Parameters
+# pipeline_length = 5
+# pipeline_size = (7, 7)
+# detection_threshold = 3
+# frame_skip_threshold = 4
+# distance_threshold = 7
+
