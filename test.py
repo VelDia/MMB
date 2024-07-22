@@ -7,7 +7,11 @@ import os
 import csv
 
 # list of paths
-opath_im = '/Users/diana/Desktop/tracking/MMB/output_rois'
+# opath_im = '/Users/diana/Desktop/tracking/MMB/output_rois_orig'
+# dataset_path = '/Users/diana/Desktop/tracking/MMB/mot/car/001/img'
+
+opath_im = '/home/diana/MMB/output_rois_limited'
+dataset_path = '/home/diana/MMB/mot/car/001/img'
 save_preds_p1 = 'pred_alg1.txt'
 save_preds_p1 = os.path.join(opath_im, save_preds_p1)
 save_preds_p2 = 'pred_alg2.txt'
@@ -29,7 +33,6 @@ video1_path = os.path.join(video_path, 'video1.mp4')
 video2_path = os.path.join(video_path, 'video2.mp4')
 
 # getting frames
-dataset_path = '/Users/diana/Desktop/tracking/MMB/mot/car/001/img'
 images_list = sorted(os.listdir(dataset_path))
 images_path = [os.path.join(dataset_path, image) for image in images_list if image != '.DS_Store']
 frames = [cv2.imread(image) for image in images_path]
@@ -74,6 +77,8 @@ with open(save_preds_p2, 'w', newline='') as file:
 
     # Calculate the number of observation matrices 
     N = calc_num_observ_matrix(frames)
+    if N > 4:
+        N = 4
     print(N)
     # print(len(frames[N-N:N]))
     # foreground_images = [0] * m
@@ -117,18 +122,18 @@ with open(save_preds_p2, 'w', newline='') as file:
 masks = np.array(masks)
 masks2 = np.array(masks2)
 length = len(masks) if len(masks) >= len(masks2) else len(masks2)
-masks_ult = np.array()
+# masks_ult = np.array()
 
-for i in range(length):
-    res = masks[i] * masks2[i]
-    res_bound = np.where(res > 0, 255, 0)
-    masks_ult.append(res_bound)
-    cv2.imwrite(os.path.join(mask_ult_path, f'mask_ult{i}.png'), new_mask2)
-# Algorithm 3 (Motion Trajectory-based False Alarm Filter)
-# Parameters
-pipeline_length = 5
-pipeline_size = (7, 7)
-detection_threshold = 3
-frame_skip_threshold = 4
-distance_threshold = 7
+# for i in range(length):
+#     res = masks[i] * masks2[i]
+#     res_bound = np.where(res > 0, 255, 0)
+#     masks_ult.append(res_bound)
+#     cv2.imwrite(os.path.join(mask_ult_path, f'mask_ult{i}.png'), new_mask2)
+# # Algorithm 3 (Motion Trajectory-based False Alarm Filter)
+# # Parameters
+# pipeline_length = 5
+# pipeline_size = (7, 7)
+# detection_threshold = 3
+# frame_skip_threshold = 4
+# distance_threshold = 7
 
