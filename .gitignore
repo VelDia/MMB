@@ -162,6 +162,9 @@ cython_debug/
 /mot/
 /output_rois/
 test3.py
+/output_rois_orig/
+/output_rois_limited/
+
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
