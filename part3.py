@@ -124,4 +124,19 @@ def read_csv_file(file_path):
 
 gt_path = 'mot/car/001/gt/gt.txt'
 ground_truths = read_csv_file(gt_path)
-print(ground_truths)
+
+ground_truths = np.array(ground_truths, dtype=object)
+
+### Possible iteration loops to access data
+
+## Loop Num 1
+# for image in ground_truths:
+#     for coordinates in image:
+#         print(coordinates)
+
+## Loop Num 2
+# for i in range(len(ground_truths)):
+#     # 'i' is the id of the frame
+#     for j in range(len(ground_truths[i])): 
+#         # 'j' is the id of the individual bounding boxes 
+#         print(ground_truths[i][j])
