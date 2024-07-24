@@ -113,11 +113,12 @@ def remove_false_alarms_one_image(mask, orig_image, num_im):
             new_mask[labels == label] = 255
 
             # Extract ROI from original image based on bounding box coordinates
-            roi = orig_image[y:y+height+1, x:x+width+1]
+            roi = orig_image[x:x+width+1, y:y+height+1]
 
             # Append ROI to list
-            rois.append([int(num_im), int(label), int(x), int(y), int(height), int(width)]) #append coordinates as they appear in (ground truth) gt.txt
-        # print(rois)
+            rois.append([int(num_im), int(label), int(x), int(y), int(width), int(height)]) #append coordinates as they appear in (ground truth) gt.txt
+            # print([int(num_im), int(label), int(x), int(y), int(width), int(height)])
+
         
     
     # cv2.destroyAllWindows()

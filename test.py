@@ -6,13 +6,17 @@ import math
 import cv2
 import os
 import csv
+import time
 
 # list of paths
 # opath_im = '/Users/diana/Desktop/tracking/MMB/output_rois_orig'
 # dataset_path = '/Users/diana/Desktop/tracking/MMB/mot/car/001/img'
 
-opath_im = '/home/diana/MMB/output_rois_limited'
-dataset_path = '/home/diana/MMB/mot/car/001/img'
+start_time = time.time()
+
+opath_im = '/home/diana/MMB/output_rois_train/'
+main_path = '/home/diana/MMB/mot/train/046/'
+dataset_path = os.path.join(main_path, 'img')
 save_preds_p1 = 'pred_alg1.txt'
 save_preds_p1 = os.path.join(opath_im, save_preds_p1)
 save_preds_p2 = 'pred_alg2.txt'
@@ -63,7 +67,8 @@ with open(save_preds_p1, 'w', newline='') as file:
         mask = morph_operations(mask)
         result_image, rois, new_mask = remove_false_alarms_one_image(mask, image, i)
         cv2.imwrite(os.path.join(mask_alg1_path, f'mask_{i}.png'), new_mask)
-        roiss.append(rois)
+        if rois != []:
+            roiss.extend(rois)
         writer.writerows(rois)
         masks.append(new_mask) 
         video.write(result_image)
@@ -113,17 +118,22 @@ with open(save_preds_p2, 'w', newline='') as file:
         # for morphed_image in morphed_images:
             result_image2, rois_2, new_mask2 = remove_false_alarms_one_image(morphed_image, frames[iter+j], iter+j)
             cv2.imwrite(os.path.join(mask_alg2_path, f'mask2_{iter+j}.png'), new_mask2)
-            roiss2.append(rois_2)
+            if rois_2 != []:
+                roiss2.extend(rois_2)   
             writer2.writerows(rois_2)
             masks2.append(new_mask2) 
             video2.write(result_image2)
         video2.release()
 
-gt_path = 'mot/car/001/gt/gt.txt'
+end_time = time.time()
+print('Time:', start_time - end_time)
+gt_path = os.path.join(main_path, 'gt', 'gt.txt')
+# gt_path = 'mot/car/001/gt/gt.txt'
 ground_truths = read_csv_file(gt_path)
+print(roiss)
 
-tp_algorithm1 = calculate_true_positives(rois, ground_truths, threshold=0.5)
-tp_algorithm2 = calculate_true_positives(rois_2, ground_truths, threshold=0.5)
+tp_algorithm1 = calculate_true_positives(roiss, ground_truths, threshold=0.1)
+tp_algorithm2 = calculate_true_positives(roiss2, ground_truths, threshold=0.1)
 
 print(f"True Positives for Algorithm 1: {tp_algorithm1}")
 print(f"True Positives for Algorithm 2: {tp_algorithm2}")
