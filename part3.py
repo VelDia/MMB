@@ -55,15 +55,19 @@ def calculate_iou(box1, box2):
     intersection_area = (x_right - x_left) * (y_bottom - y_top)
     box1_area = (x1_bottomright - x1_topleft) * (y1_bottomright - y1_topleft)
     box2_area = (x2_bottomright - x2_topleft) * (y2_bottomright - y2_topleft)
-
-    iou = intersection_area / float(box1_area + box2_area - intersection_area)
+    
+    # print(intersection_area)
+    if intersection_area > 0:
+        iou = intersection_area / float(box1_area + box2_area - intersection_area)
+    else:
+        iou = 0
     return iou
 
-def is_true_positive(pred_box, gt_box, threshold=0.5):
+def is_true_positive(pred_box, gt_box, threshold=0.1):
     iou = calculate_iou(pred_box, gt_box)
     return iou >= threshold
 
-def calculate_true_positives(predictions, ground_truths, threshold=0.5):
+def calculate_true_positives(predictions, ground_truths, threshold=0.1):
     """
     Function to calculate the number of True Positives (TP) for each algorithm's predictions.
     predictions: List of lists of bounding boxes from the algorithm.
@@ -105,7 +109,7 @@ def read_csv_file(file_path):
     bounding_boxes = []
     with open(file_path, 'r') as file:
         reader = csv.reader(file)
-        next(reader)  # Skip the header row
+        # next(reader)  # Skip the header row
         i = 0
         bb_img =[]
         for row in reader:
@@ -122,21 +126,33 @@ def read_csv_file(file_path):
             
     return bounding_boxes
 
-gt_path = 'mot/car/001/gt/gt.txt'
-ground_truths = read_csv_file(gt_path)
+# gt_path = 'mot/car/001/gt/gt.txt'
+# ground_truths = read_csv_file(gt_path)
 
-ground_truths = np.array(ground_truths, dtype=object)
+# ground_truths = np.array(ground_truths, dtype=object)
 
-### Possible iteration loops to access data
+# # Possible iteration loops to access data
 
-## Loop Num 1
+# # Loop Num 1
 # for image in ground_truths:
 #     for coordinates in image:
+#         break
 #         print(coordinates)
 
-## Loop Num 2
-# for i in range(len(ground_truths)):
+# # Loop Num 2
+# for i in range(len(ground_truths)-2):
 #     # 'i' is the id of the frame
+#     tps = calculate_true_positives(ground_truths[i], ground_truths[i])
+#     print(tps)
 #     for j in range(len(ground_truths[i])): 
 #         # 'j' is the id of the individual bounding boxes 
-#         print(ground_truths[i][j])
+        
+#         for k in range(len(ground_truths[i][j])):
+#             break
+#             # print(ground_truths[i][j][k])
+
+
+
+# # iou_test = calculate_iou(ground_truths[i][j], ground_truths[i][j])
+# # is_tp_test = is_true_positive(ground_truths[i][j], ground_truths[i][j])
+# # print(is_tp_test)

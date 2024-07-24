@@ -1,5 +1,6 @@
 from algorithm1 import calc_difference_mask, remove_false_alarms_one_image, convert_to_binary_mask, morph_operations
 from algorithm2 import construct_data_matrix, estimate_rank, fRMC, calc_num_observ_matrix, saving_roi_from_mask
+from part3 import calculate_true_positives, calculate_metrics, read_csv_file
 import numpy as np
 import math
 import cv2
@@ -118,11 +119,25 @@ with open(save_preds_p2, 'w', newline='') as file:
             video2.write(result_image2)
         video2.release()
 
+gt_path = 'mot/car/001/gt/gt.txt'
+ground_truths = read_csv_file(gt_path)
+
+tp_algorithm1 = calculate_true_positives(rois, ground_truths, threshold=0.5)
+tp_algorithm2 = calculate_true_positives(rois_2, ground_truths, threshold=0.5)
+
+print(f"True Positives for Algorithm 1: {tp_algorithm1}")
+print(f"True Positives for Algorithm 2: {tp_algorithm2}")
+
+precision1, recall1, f1_score1 = calculate_metrics(rois, ground_truths, 0.01)
+precision2, recall2, f1_score2 = calculate_metrics(rois_2, ground_truths, 0.01)
+print("Alg 1: ", precision1, recall1, f1_score1)
+print("Alg 2: ", precision2, recall2, f1_score2)
+
 # Perform element-wise multiplication of masks
-masks = np.array(masks)
-masks2 = np.array(masks2)
-length = len(masks) if len(masks) >= len(masks2) else len(masks2)
-# masks_ult = np.array()
+# masks = np.array(masks)
+# masks2 = np.array(masks2)
+# length = len(masks) if len(masks) >= len(masks2) else len(masks2)
+# # masks_ult = np.array()
 
 # for i in range(length):
 #     res = masks[i] * masks2[i]
