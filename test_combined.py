@@ -7,19 +7,14 @@ import os
 import csv
 
 dataset_path = 'mot/'
-
 dict_folder = {
     # 'car' : os.path.join(dataset_path, 'car'),
     # 'plane' : os.path.join(dataset_path, 'plane'),
     # 'ship' : os.path.join(dataset_path, 'ship'),
     'train' : os.path.join(dataset_path, 'train')
 }
-# list of paths
-# opath_im = '/Users/diana/Desktop/tracking/MMB/output_rois_orig'
-# dataset_path = '/Users/diana/Desktop/tracking/MMB/mot/car/001/img'
 
-opath_im = '/home/diana/MMB/output_rois_test'
-# dataset_path = '/home/diana/MMB/mot/car/001/img'
+opath_im = 'output_rois_test'
 save_preds_p1 = 'pred_alg1.txt'
 save_preds_p2 = 'pred_alg2.txt'
 
@@ -79,12 +74,15 @@ for folder_name, folder_path in dict_folder.items():
                 mask = morph_operations(mask)
                 result_image, rois, new_mask = remove_false_alarms_one_image(mask, image, i)
                 cv2.imwrite(os.path.join(mask_alg1_path, f'mask_{i}.png'), new_mask)
+                # cv2.imshow('ROI', result_image)
+                # cv2.waitKey(0)
+                
                 roiss.append(rois)
                 writer.writerows(rois)
                 masks.append(new_mask) 
                 video.write(result_image)
-            video.release()
-
+        video.release()
+        # cv2.destroyAllWindows()
         video2 = cv2.VideoWriter(video2_path, fourcc, 10, (width, height))
         masks2 = []
         roiss2 = []
@@ -129,16 +127,22 @@ for folder_name, folder_path in dict_folder.items():
                 # for morphed_image in morphed_images:
                     result_image2, rois_2, new_mask2 = remove_false_alarms_one_image(morphed_image, frames[iter+j], iter+j)
                     cv2.imwrite(os.path.join(mask_alg2_path, f'mask2_{iter+j}.png'), new_mask2)
+                    
                     roiss2.append(rois_2)
                     writer2.writerows(rois_2)
                     masks2.append(new_mask2) 
                     video2.write(result_image2)
-                video2.release()
+        video2.release()
 
         # Perform element-wise multiplication of masks
         masks = np.array(masks)
         masks2 = np.array(masks2)
         length = len(masks) if len(masks) >= len(masks2) else len(masks2)
+
+
+
+
+
         # masks_ult = np.array()
 
         # for i in range(length):

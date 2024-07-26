@@ -74,14 +74,20 @@ def plot_mask(im_path_list):
     plt.show()
 
 def remove_false_alarms_one_image(mask, orig_image, num_im):
+    
+    # Original parameters
+
     # min_area = 5
     # max_area = 80
     # min_aspect_ratio = 1.0
     # max_aspect_ratio = 6.0
+
+    # Custom parameters
     min_area = 4
     max_area = 324
     min_aspect_ratio = 0.25
     max_aspect_ratio = 6.0
+
     # Create a copy of the original image to draw bounding boxes
     output_image = orig_image.copy()
 
@@ -120,8 +126,6 @@ def remove_false_alarms_one_image(mask, orig_image, num_im):
             rois.append([int(num_im), int(label), int(x), int(y), int(width), int(height)]) #append coordinates as they appear in (ground truth) gt.txt
             # print([int(num_im), int(label), int(x), int(y), int(width), int(height)])
 
-        
-    
     # cv2.destroyAllWindows()
     return output_image, rois, new_mask
 
