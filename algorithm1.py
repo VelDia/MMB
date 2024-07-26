@@ -22,14 +22,15 @@ def convert_to_binary_mask(img):
 
 def calc_difference_mask (im_path_list):
     # read images
-    image1 = cv2.imread(im_path_list[0], cv2.IMREAD_COLOR)
-    image2 = cv2.imread(im_path_list[1], cv2.IMREAD_COLOR)
-    image3 = cv2.imread(im_path_list[2], cv2.IMREAD_COLOR)
-
+    images = []
+    for img in im_path_list:
+        images.append(cv2.imread(img, cv2.IMREAD_COLOR))
+    num = len(images)
+    print(round(num/2))
     # Calculate differencing images
-    D_t1 = np.abs(image2.astype(np.int32) - image1.astype(np.int32))
-    D_t2 = np.abs(image3.astype(np.int32) - image1.astype(np.int32))
-    D_t3 = np.abs(image3.astype(np.int32) - image2.astype(np.int32))
+    D_t1 = np.abs(images[round(num/2)].astype(np.int32) - images[0].astype(np.int32))
+    D_t2 = np.abs(images[-1].astype(np.int32) - images[0].astype(np.int32))
+    D_t3 = np.abs(images[-1].astype(np.int32) - images[round(num/2)].astype(np.int32))
 
     # Calculate the accumulative response image 
     acc_resp_im = (D_t1 + D_t2 + D_t3)/3
