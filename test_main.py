@@ -1,4 +1,4 @@
-from algorithm1 import calc_difference_mask, remove_false_alarms, convert_to_binary_mask, morph_operations
+from algorithm1 import calc_difference_mask, convert_to_binary_mask, morph_operations, remove_false_alarms_one_image
 from algorithm2 import construct_data_matrix, estimate_rank, fRMC
 
 import cv2
@@ -15,14 +15,18 @@ dict_folder = {
     'train' : os.path.join(dataset_path, 'train')
 }
 
-for name, name_path in dict_folder.items():
+dict_rois = {}
+
+max_num_frames = 5
+
+for folder_name, name_path in dict_folder.items():
     # print(name_path)
     # print(os.listdir(name_path))
     video_folder = [os.path.join((os.path.join(name_path, path)), 'img') for path in sorted(os.listdir(name_path)) if path != '.DS_Store']
-    for video in video_folder:
-        images_list = sorted(os.listdir(video))
+    for video_name in video_folder:
+        images_list = sorted(os.listdir(video_name))
         print(images_list)
-        images_path = [os.path.join(video, image) for image in images_list if image != '.DS_Store']
+        images_path = [os.path.join(video_name, image) for image in images_list if image != '.DS_Store']
         frames = [cv2.imread(image) for image in images_path]
         m = len(frames)
         print(m)
@@ -31,18 +35,23 @@ for name, name_path in dict_folder.items():
         roiss = []
         resulted_imgs = []
 
-        opath_im = '/output_rois/' + name + '/'
-        for i in range(1, m-2):
-            im_path_list = images_path[i:i+3]
-            print(im_path_list)
+        opath_im = os.path.join('output_rois', folder_name)
+        for i in range(1, m):
+            # dict_rois = {folder_name={video_name={}}}
+            # im_path_list = images_path[i:i+3]
+            im_path_list = []
+            n = 0
+            for img in images_path[i:]:
+                if n > max_num_frames:
+                    break
+                im_path_list.append(img)
+                n += 1
+            
             diff, mask = calc_difference_mask(im_path_list)
             masks.append(mask)
-            image3 = cv2.imread(im_path_list[2], cv2.IMREAD_COLOR)
-            save_path = os.path.join(opath_im, images_list[i], 'roi'+ str(i) +  '.jpg')
-
-            os.makedirs(save_path, exist_ok=True)
+            image3 = cv2.imread(im_path_list[0], cv2.IMREAD_COLOR)
             mask = morph_operations(mask)
-            result_image, rois = remove_false_alarms(mask, image3, save_path)
+            result_image, rois, new_mask = remove_false_alarms_one_image(mask, image3, i)
             roiss.append(rois)
             resulted_imgs.append(result_image) 
         
