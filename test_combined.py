@@ -131,7 +131,7 @@ for folder_name, folder_path in dict_folder.items():
                     roiss2.append(rois_2)
                     writer2.writerows(rois_2)
                     masks2.append(new_mask2) 
-                    video2.write(result_image2)
+                    video2.write(new_mask2)
         video2.release()
 
         # Perform element-wise multiplication of masks

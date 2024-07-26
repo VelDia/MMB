@@ -26,7 +26,7 @@ def calc_difference_mask (im_path_list):
     for img in im_path_list:
         images.append(cv2.imread(img, cv2.IMREAD_COLOR))
     num = len(images)
-    print(round(num/2))
+    # print(round(num/2)) # Check if the middle image has the intended position
     # Calculate differencing images
     D_t1 = np.abs(images[round(num/2)].astype(np.int32) - images[0].astype(np.int32))
     D_t2 = np.abs(images[-1].astype(np.int32) - images[0].astype(np.int32))
