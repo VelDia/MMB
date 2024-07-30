@@ -46,6 +46,28 @@ for folder_name, folder_path in dict_folder.items():
     # getting frames
     video_folder = [os.path.join(folder_path, path, 'img') for path in sorted(os.listdir(folder_path)) if path != '.DS_Store']
     for video_name in video_folder:
+        
+        opath_im = os.path.join(opath_im, video_name)
+        # saving main directories into variables
+        save_preds_p1 = os.path.join(opath_im, save_preds_p1)
+        save_preds_p2 = os.path.join(opath_im, save_preds_p2)
+        video_path = os.path.join(opath_im, 'video')
+        foreground_path = os.path.join(opath_im, 'foreground')
+        background_path = os.path.join(opath_im, 'background')
+        mask_alg1_path = os.path.join(opath_im, 'masks_alg1')
+        mask_alg2_path = os.path.join(opath_im, 'masks_alg2')
+        mask_ult_path = os.path.join(opath_im, 'masks_ult')
+        # creating absent directories
+        os.makedirs(mask_alg1_path, exist_ok=True)
+        os.makedirs(mask_alg2_path, exist_ok=True)
+        os.makedirs(mask_ult_path, exist_ok=True)
+        os.makedirs(foreground_path, exist_ok=True)
+        os.makedirs(background_path, exist_ok=True)
+        os.makedirs(opath_im, exist_ok=True)
+        os.makedirs(video_path, exist_ok=True)
+        video1_path = os.path.join(video_path, 'video_alg1.mp4')
+        video2_path = os.path.join(video_path, 'video_alg2.mp4')
+
         images_list = sorted(os.listdir(video_name))
         images_path = [os.path.join(video_name, image) for image in images_list if image != '.DS_Store']
         frames = [cv2.imread(image) for image in images_path]
