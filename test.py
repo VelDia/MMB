@@ -14,8 +14,10 @@ import time
 
 start_time = time.time()
 
-opath_im = '/home/diana/MMB/output_rois_train/'
-main_path = '/home/diana/MMB/mot/train/046/'
+# opath_im = '/home/diana/MMB/output_rois_train/'
+# main_path = '/home/diana/MMB/mot/train/046/'
+opath_im = 'output_rois_train/'
+main_path = 'mot/train/046/'
 dataset_path = os.path.join(main_path, 'img')
 save_preds_p1 = 'pred_alg1.txt'
 save_preds_p1 = os.path.join(opath_im, save_preds_p1)

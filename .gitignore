@@ -163,6 +163,9 @@ cython_debug/
 /output_rois/
 test3.py
 /output_rois_limited/
+/output_rois_test/
+/output_rois_train/
+/SatSOT/
 
 
 # PyCharm
