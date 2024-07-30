@@ -5,16 +5,17 @@ import math
 import cv2
 import os
 import csv
-
+import time
+start_time = time.time()
 dataset_path = 'mot/'
 dict_folder = {
-    # 'car' : os.path.join(dataset_path, 'car'),
-    # 'plane' : os.path.join(dataset_path, 'plane'),
-    # 'ship' : os.path.join(dataset_path, 'ship'),
+    'car' : os.path.join(dataset_path, 'car'),
+    'plane' : os.path.join(dataset_path, 'plane'),
+    'ship' : os.path.join(dataset_path, 'ship'),
     'train' : os.path.join(dataset_path, 'train')
 }
 
-opath_im = 'output_rois_test'
+opath_im = 'output_rois_any'
 save_preds_p1 = 'pred_alg1.txt'
 save_preds_p2 = 'pred_alg2.txt'
 
@@ -53,6 +54,7 @@ for folder_name, folder_path in dict_folder.items():
 
         # # save the video
         width, height, _ = frames[0].shape
+        print(frames[0].shape)
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         video = cv2.VideoWriter(video1_path, fourcc, 10, (width, height))
 
@@ -157,4 +159,6 @@ for folder_name, folder_path in dict_folder.items():
         # detection_threshold = 3
         # frame_skip_threshold = 4
         # distance_threshold = 7
+end_time = time.time()
 
+print("Time elapsed:", end_time-start_time)
