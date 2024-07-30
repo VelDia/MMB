@@ -48,7 +48,7 @@ def morph_operations(image):
 def plot_mask(im_path_list):
 
     image1 = cv2.imread(im_path_list[0], cv2.IMREAD_COLOR)
-    image2 = cv2.imread(im_path_list[2], cv2.IMREAD_COLOR)
+    image2 = cv2.imread(im_path_list[-1], cv2.IMREAD_COLOR)
     diff, mask = calc_difference_mask(im_path_list)
     mask = morph_operations(mask)
 
