@@ -165,6 +165,7 @@ test3.py
 /output_rois_limited/
 /output_rois_test/
 /output_rois_train/
+/output_rois_orig/
 /SatSOT/
 
 
