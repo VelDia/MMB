@@ -168,7 +168,8 @@ test3.py
 /output_rois_orig/
 /SatSOT/
 /output_rois_any/
-
+/fRMC-master/
+/output_rois_new/
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

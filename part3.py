@@ -88,15 +88,30 @@ def calculate_true_positives(predictions, ground_truths, threshold=0.1):
 
     return true_positives
 
-def calculate_metrics(predictions, ground_truths, threshold=0.5):
+def calculate_tp_fp_fn(predictions, ground_truths, threshold=0.1):
     true_positives = calculate_true_positives(predictions, ground_truths, threshold)
     total_ground_truths = len(ground_truths)
     total_predictions = len(predictions)
     false_negatives = total_ground_truths - true_positives
     false_positives = total_predictions - true_positives
 
-    precision = true_positives / (true_positives + false_positives) if (true_positives + false_positives) > 0 else 0
-    recall = true_positives / (true_positives + false_negatives) if (true_positives + false_negatives) > 0 else 0
+    return true_positives, false_positives, false_negatives
+
+def calculate_metrics(all_true_boxes, all_predicted_boxes, iou_threshold=0.1):
+    total_tp = 0
+    total_fp = 0
+    total_fn = 0
+
+    # Iterate through all images
+    for true_boxes, predicted_boxes in zip(all_true_boxes, all_predicted_boxes):
+        tp, fp, fn = calculate_tp_fp_fn(true_boxes, predicted_boxes, iou_threshold)
+        total_tp += tp
+        total_fp += fp
+        total_fn += fn
+
+    # Calculate aggregated metrics
+    precision = total_tp / (total_tp + total_fp) if (total_tp + total_fp) > 0 else 0
+    recall = total_tp / (total_tp + total_fn) if (total_tp + total_fn) > 0 else 0
     f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
 
     return precision, recall, f1_score
@@ -126,33 +141,38 @@ def read_csv_file(file_path):
             
     return bounding_boxes
 
-# gt_path = 'mot/car/001/gt/gt.txt'
-# ground_truths = read_csv_file(gt_path)
+gt_path = 'mot/car/001/gt/gt.txt'
+pred_path = 'output_rois_new/car/1/pred_alg1.txt'
+ground_truths = read_csv_file(gt_path)
+ground_truths = np.array(ground_truths, dtype=object)
 
-# ground_truths = np.array(ground_truths, dtype=object)
+preds = read_csv_file(pred_path)
+preds = np.array(preds, dtype=object)
+# Possible iteration loops to access data
 
-# # Possible iteration loops to access data
+# Loop Num 1
+for image in ground_truths:
+    for coordinates in image:
+        break
+        print(coordinates)
 
-# # Loop Num 1
-# for image in ground_truths:
-#     for coordinates in image:
-#         break
-#         print(coordinates)
-
-# # Loop Num 2
-# for i in range(len(ground_truths)-2):
-#     # 'i' is the id of the frame
-#     tps = calculate_true_positives(ground_truths[i], ground_truths[i])
-#     print(tps)
-#     for j in range(len(ground_truths[i])): 
-#         # 'j' is the id of the individual bounding boxes 
+# Loop Num 2
+for i in range(len(preds)):
+    # 'i' is the id of the frame
+    for j in range(len(ground_truths[i])): 
+        # 'j' is the id of the individual bounding boxes 
         
-#         for k in range(len(ground_truths[i][j])):
-#             break
-#             # print(ground_truths[i][j][k])
+        for k in range(len(ground_truths[i][j])):
+            break
+            # print(ground_truths[i][j][k])
+eval = calculate_metrics(preds, ground_truths)
+print(eval)
 
 
-
-# # iou_test = calculate_iou(ground_truths[i][j], ground_truths[i][j])
-# # is_tp_test = is_true_positive(ground_truths[i][j], ground_truths[i][j])
-# # print(is_tp_test)
+# iou_test = calculate_iou(ground_truths[i][j], ground_truths[i][j])
+# is_tp_test = is_true_positive(ground_truths[i][j], ground_truths[i][j])
+# print(is_tp_test)
+# tps = calculate_true_positives(preds[i], ground_truths[i])
+# # print(tps, '/', len(preds[i]), '/', len(ground_truths[i]))
+# eval = calculate_metrics(preds, ground_truths)
+# print(eval)
