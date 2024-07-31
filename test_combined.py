@@ -20,11 +20,19 @@ for folder_name, folder_path in dict_folder.items():
     # getting frames
     video_folder = [os.path.join(folder_path, path, 'img') for path in sorted(os.listdir(folder_path)) if path != '.DS_Store']
     for video_name in video_folder:
+<<<<<<< HEAD
         counter +=1
         opath_im = os.path.join('output_rois_any', folder_name, str(counter))
         # saving main directories into variables
         save_preds_p1 = os.path.join(opath_im, 'pred_alg1.txt')
         save_preds_p2 = os.path.join(opath_im, 'pred_alg2.txt')
+=======
+        
+        opath_im = os.path.join(opath_im, video_name)
+        # saving main directories into variables
+        save_preds_p1 = os.path.join(opath_im, save_preds_p1)
+        save_preds_p2 = os.path.join(opath_im, save_preds_p2)
+>>>>>>> c5460e22e5478c5af10a08ab19d05a6409be8849
         video_path = os.path.join(opath_im, 'video')
         foreground_path = os.path.join(opath_im, 'foreground')
         background_path = os.path.join(opath_im, 'background')
@@ -32,12 +40,19 @@ for folder_name, folder_path in dict_folder.items():
         mask_alg2_path = os.path.join(opath_im, 'masks_alg2')
         mask_ult_path = os.path.join(opath_im, 'masks_ult')
         # creating absent directories
+<<<<<<< HEAD
         os.makedirs(opath_im, exist_ok=True)
+=======
+>>>>>>> c5460e22e5478c5af10a08ab19d05a6409be8849
         os.makedirs(mask_alg1_path, exist_ok=True)
         os.makedirs(mask_alg2_path, exist_ok=True)
         os.makedirs(mask_ult_path, exist_ok=True)
         os.makedirs(foreground_path, exist_ok=True)
         os.makedirs(background_path, exist_ok=True)
+<<<<<<< HEAD
+=======
+        os.makedirs(opath_im, exist_ok=True)
+>>>>>>> c5460e22e5478c5af10a08ab19d05a6409be8849
         os.makedirs(video_path, exist_ok=True)
         video1_path = os.path.join(video_path, 'video_alg1.mp4')
         video2_path = os.path.join(video_path, 'video_alg2.mp4')
