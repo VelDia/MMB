@@ -167,6 +167,7 @@ test3.py
 /output_rois_train/
 /output_rois_orig/
 /SatSOT/
+/output_rois_any/
 
 
 # PyCharm
