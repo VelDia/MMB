@@ -14,6 +14,7 @@ dict_folder = {
     'ship' : os.path.join(dataset_path, 'ship'),
     'train' : os.path.join(dataset_path, 'train'),
 }
+unknown1 = [1, -1, -1, -1]
 counter = 0 
 for folder_name, folder_path in dict_folder.items():
     print(folder_name)
@@ -21,7 +22,7 @@ for folder_name, folder_path in dict_folder.items():
     video_folder = [os.path.join(folder_path, path, 'img') for path in sorted(os.listdir(folder_path)) if path != '.DS_Store']
     for video_name in video_folder:
         counter +=1
-        opath_im = os.path.join('output_rois_any', folder_name, str(counter))
+        opath_im = os.path.join('output_rois_new', folder_name, str(counter))
         # saving main directories into variables
         save_preds_p1 = os.path.join(opath_im, 'pred_alg1.txt')
         save_preds_p2 = os.path.join(opath_im, 'pred_alg2.txt')
@@ -74,9 +75,10 @@ for folder_name, folder_path in dict_folder.items():
                 cv2.imwrite(os.path.join(mask_alg1_path, f'mask_{i}.png'), new_mask)
                 # cv2.imshow('ROI', result_image)
                 # cv2.waitKey(0)
-                
+
+                writ_rois = [roi + unknown1 for roi in rois]
                 roiss.append(rois)
-                writer.writerows(rois)
+                writer.writerows(writ_rois)
                 masks.append(new_mask) 
                 video.write(result_image)
         video.release()
