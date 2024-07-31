@@ -113,12 +113,9 @@ for folder_name, folder_path in dict_folder.items():
                     
                     # # B = convert_to_binary_mask(B)
                     print(foreground_images[0].shape)
-                    print(type(foreground_images[0]))
-                    print(type(frames[0]))
                     binary_images.append(convert_to_binary_mask(temp_img))
                     # binary_images = [convert_to_binary_mask(fr) for fr in foreground_images[iter:iter+N]]
                 morphed_images = [morph_operations(binary_image) for binary_image in binary_images]
-                
                 # for j in range(B.shape[1]):
                 #     background = B[:, j].reshape(frames[0].shape)
                 #     foreground = frames[j] - background
@@ -140,6 +137,7 @@ for folder_name, folder_path in dict_folder.items():
         #             video2.write(result_image2)
         # video2.release()
                 for l, (morphed_image, foreground, background) in enumerate(zip(morphed_images, foreground_images, background_images)):
+                    print(type(morphed_image))
                     cv2.imwrite(os.path.join(foreground_path, f'fg_img_{iter+l}.png'), foreground)
                     cv2.imwrite(os.path.join(background_path, f'bg_img_{iter+l}.png'), background)
                     result_image2, rois_2, new_mask2 = remove_false_alarms_one_image(morphed_image, frames[iter], iter)
