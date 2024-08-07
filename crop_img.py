@@ -22,7 +22,7 @@ def crop_image_into_parts(image, crop_width, crop_height):
     return cropped_images
 
 # Read the image
-image = cv2.imread('path/to/your/image.jpg')
+image = cv2.imread('/Users/diana/Desktop/MMB/mot/car/001/img/000001.jpg')
 
 # Define crop size
 crop_width = 100  # Width of each crop
@@ -34,7 +34,7 @@ cropped_images = crop_image_into_parts(image, crop_width, crop_height)
 # Display or save each cropped part
 for i, crop in enumerate(cropped_images):
     cv2.imshow(f'Cropped Image {i+1}', crop)
-    cv2.imwrite(f'path/to/save/cropped_image_{i+1}.jpg', crop)
+    cv2.imwrite(f'/Users/diana/Desktop/MMB/mot/car/001/img/cropped_image_{i+1}.jpg', crop)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
