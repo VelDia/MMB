@@ -49,6 +49,6 @@ if __name__ == "__main__":
     original_sizes_folder = '/Users/diana/Desktop/MMB/mot/car/001/img/original_sizes_folder'
     os.makedirs(resized_folder, exist_ok=True)
     os.makedirs(original_sizes_folder, exist_ok=True)
-    target_height = 600  # Set the target height for resizing
+    target_height = 640  # Set the target height for resizing
 
     main(input_folder, resized_folder, original_sizes_folder, target_height)
