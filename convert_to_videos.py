@@ -6,14 +6,16 @@ def convert_folder_to_video(image_folder):
     # Get a list of all JPEG files in the specified folder
     images = [img for img in os.listdir(image_folder) if img.endswith(".jpg") or img.endswith(".png")]
     images.sort()
-
+    print(len(images))
+    print("HEre")
     # Read the first image to get dimensions
     frame = cv2.imread(os.path.join(image_folder, images[0]))
+    print(len(images))
     height, width, layers = frame.shape
     video_path = os.path.join(image_folder, video_name)
     # Initialize the VideoWriter
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    video = cv2.VideoWriter(video_path, fourcc, 300, (width, height))
+    video = cv2.VideoWriter(video_path, fourcc, 10, (width, height))
 
     # Write each image to the video
     for image in images:
@@ -35,7 +37,7 @@ def convert_frames_to_video(images):
 
     # Initialize the VideoWriter
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    video = cv2.VideoWriter(video_path, fourcc, 300, (width, height))
+    video = cv2.VideoWriter(video_path, fourcc, 10, (width, height))
 
     # Write each image to the video
     for image in images:
@@ -46,3 +48,6 @@ def convert_frames_to_video(images):
 
     # Clean up
     cv2.destroyAllWindows()
+
+folder = '/Users/diana/Desktop/MMB/mot/car/002/img'
+convert_folder_to_video(folder)
