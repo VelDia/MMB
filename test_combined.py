@@ -9,9 +9,9 @@ import time
 start_time = time.time()
 dataset_path = 'mot/'
 dict_folder = {
-    # 'car' : os.path.join(dataset_path, 'car'),
-    # 'plane' : os.path.join(dataset_path, 'plane'),
-    # 'ship' : os.path.join(dataset_path, 'ship'),
+    'car' : os.path.join(dataset_path, 'car'),
+    'plane' : os.path.join(dataset_path, 'plane'),
+    'ship' : os.path.join(dataset_path, 'ship'),
     'train' : os.path.join(dataset_path, 'train'),
 }
 unknown1 = [1, -1, -1, -1]
@@ -52,37 +52,37 @@ for folder_name, folder_path in dict_folder.items():
         # # save the video
         width, height, _ = frames[0].shape
         print(frames[0].shape)
-        # fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        # video = cv2.VideoWriter(video1_path, fourcc, 10, (width, height))
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        video = cv2.VideoWriter(video1_path, fourcc, 10, (width, height))
 
-        # masks = []
-        # roiss = []
+        masks = []
+        roiss = []
 
-        # with open(save_preds_p1, 'w', newline='') as file:
-        #     writer = csv.writer(file)
+        with open(save_preds_p1, 'w', newline='') as file:
+            writer = csv.writer(file)
 
-        #     # Algorithm #1
-        #     for i in range(1, m-2):
-        #         im_path_list = images_path[i:i+3]
-        #         # print(im_path_list)
-        #         image = cv2.imread(im_path_list[0], cv2.IMREAD_COLOR)
+            # Algorithm #1
+            for i in range(1, m-2):
+                im_path_list = images_path[i:i+3]
+                # print(im_path_list)
+                image = cv2.imread(im_path_list[0], cv2.IMREAD_COLOR)
 
-        #         diff, mask = calc_difference_mask(im_path_list)
-        #         masks.append(mask)
+                diff, mask = calc_difference_mask(im_path_list)
+                masks.append(mask)
 
-        #         mask = morph_operations(mask)
-        #         result_image, rois, new_mask = remove_false_alarms_one_image(mask, image, i)
-        #         cv2.imwrite(os.path.join(mask_alg1_path, f'mask_{i}.png'), new_mask)
-        #         # cv2.imshow('ROI', result_image)
-        #         # cv2.waitKey(0)
+                mask = morph_operations(mask)
+                result_image, rois, new_mask = remove_false_alarms_one_image(mask, image, i)
+                cv2.imwrite(os.path.join(mask_alg1_path, f'mask_{i}.png'), new_mask)
+                # cv2.imshow('ROI', result_image)
+                # cv2.waitKey(0)
 
-        #         writ_rois = [roi + unknown1 for roi in rois]
-        #         roiss.append(rois)
-        #         writer.writerows(writ_rois)
-        #         masks.append(new_mask) 
-        #         video.write(result_image)
-        # video.release()
-        # cv2.destroyAllWindows()
+                writ_rois = [roi + unknown1 for roi in rois]
+                roiss.append(rois)
+                writer.writerows(writ_rois)
+                masks.append(new_mask) 
+                video.write(result_image)
+        video.release()
+        cv2.destroyAllWindows()
 
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         video2 = cv2.VideoWriter(video2_path, fourcc, 10, (width, height))

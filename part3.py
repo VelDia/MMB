@@ -116,7 +116,7 @@ def calculate_metrics(all_true_boxes, all_predicted_boxes, iou_threshold=0.1):
 
     return precision, recall, f1_score
 
-def read_csv_file(file_path):
+def read_csv_file_gt(file_path):
     """
     Reads a CSV file and returns a list of bounding boxes.
     Each line is expected to be in the format: xmin,ymin,xmax,ymax
@@ -141,9 +141,36 @@ def read_csv_file(file_path):
             
     return bounding_boxes
 
+def read_csv_file(file_path):
+    """
+    Reads a CSV file and returns a list of bounding boxes.
+    Each line is expected to be in the format: xmin,ymin,xmax,ymax
+    """
+    bounding_boxes = []
+    with open(file_path, 'r') as file:
+        reader = csv.reader(file)
+        # next(reader)  # Skip the header row
+        i = 0
+        bb_img =[]
+        for row in reader:
+
+            j, _, xmin, ymin, height, width = map(float, row)
+            if i != j:
+                bounding_boxes.append(bb_img)
+                bb_img=[]
+                i = j
+            xmax = xmin + height
+            ymax = ymin + width
+            
+            bb_img.append([xmin, ymin, xmax, ymax])
+            
+    return bounding_boxes
+
 gt_path = 'mot/car/001/gt/gt.txt'
-pred_path = 'output_rois_new/car/1/pred_alg1.txt'
-ground_truths = read_csv_file(gt_path)
+# pred_path = 'output_rois_new/car/1/pred_alg1.txt'
+pred_path = 'output_rois_orig/pred_alg2.txt'
+
+ground_truths = read_csv_file_gt(gt_path)
 ground_truths = np.array(ground_truths, dtype=object)
 
 preds = read_csv_file(pred_path)
