@@ -160,7 +160,16 @@ cython_debug/
 # My files
 #  Dataset
 /mot/
-/output_rois/
+.png
+.jpeg
+.jpg
+/output_rois/*/*/background/
+/output_rois/*/*/foreground/
+/output_rois/*/*/masks_alg1/
+/output_rois/*/*/masks_alg2/
+/output_rois/*/*/masks_ult/
+/output_rois/*/*/video/
+
 test3.py
 /output_rois_limited/
 /output_rois_test/
