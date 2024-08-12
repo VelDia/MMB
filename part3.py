@@ -108,3 +108,28 @@ def read_csv_file(file_path):
             bb_img.append([xmin, ymin, xmax, ymax])
             
     return bounding_boxes
+
+def read_csv_file_alg2(file_path):
+    """
+    Reads a CSV file and returns a list of bounding boxes.
+    Each line is expected to be in the format: xmin,ymin,xmax,ymax
+    """
+    bounding_boxes = []
+    with open(file_path, 'r') as file:
+        reader = csv.reader(file)
+        # next(reader)  # Skip the header row
+        i = 0
+        bb_img =[]
+        for row in reader:
+
+            j, _, xmin, ymin, height, width = map(int, row)
+            if i != j:
+                bounding_boxes.append(bb_img)
+                bb_img=[]
+                i = j
+            xmax = xmin + height
+            ymax = ymin + width
+            
+            bb_img.append([xmin, ymin, xmax, ymax])
+            
+    return bounding_boxes
