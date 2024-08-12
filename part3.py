@@ -84,6 +84,35 @@ def calculate_mAP():
 def calculate_classAP():
     return
 
+
+def read_csv_file_yolo(files, image_width, image_height):
+    """
+    Reads a CSV file and returns a list of bounding boxes.
+    Each line is expected to be in the format: xmin,ymin,xmax,ymax
+    """
+    bounding_boxes = []
+    for file_path in files:
+        with open(file_path, 'r') as file:
+            reader = csv.reader(file)
+            # next(reader)  # Skip the header row
+            i = 0
+            bb_img =[]
+            for row in reader:
+                # print(row)
+                row_list = row[0].strip().split()
+
+                _, xcentr, ycentr, width,height = map(float, row_list)
+                xmin = xcentr - width
+                xmax = xcentr + width
+                ymin = ycentr - height
+                ymax = ycentr + height
+                # bb_img.append([xmin, ymin, xmax, ymax])
+                
+                bb_img.append([int(xmin*image_width), int(ymin*image_height), int(xmax*image_width), int(ymax*image_height)])
+        bounding_boxes.append(bb_img)
+
+    return bounding_boxes
+
 def read_csv_file(file_path):
     """
     Reads a CSV file and returns a list of bounding boxes.
