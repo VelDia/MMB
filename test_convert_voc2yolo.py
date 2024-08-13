@@ -95,7 +95,7 @@ for folder_name, folder_path in dict_folder.items():
     if os.path.exists(folder_path):
         folder_path_img = os.path.join(folder_path, 'JPEGImages')
         folder_path_ann = os.path.join(folder_path, 'Annotations')
-        for set_name in ['train', 'test']:
+        for set_name in ['train', 'val', 'test']:
             ids = open(f'{folder_path}/ImageSets/Main/{set_name}.txt').read().strip().split()
             images_path = [os.path.join(folder_path_img, path+'.jpg') for path in sorted(ids)]
             annot_path = [os.path.join(folder_path_ann, path+'.xml') for path in sorted(ids)]
