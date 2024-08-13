@@ -72,7 +72,8 @@ dict_folder = {
     'train' : os.path.join(dataset_path, 'train')
 }
 
-# creating classes.txt file to store object-class from folder-names
+
+''' creating classes.txt file to store object-class from folder-names
 classes_txt_path = os.path.join(output_yolo_path, 'classes.txt')
 
 try: 
@@ -81,55 +82,31 @@ try:
             file.write(key + '\n')
 except Exception as e:
     print(f"An error occurred: {e}")    
+'''
 
 
-
-'''Attempt to move images and rename them 
-from VISO dataset '/mot'''
+'''Move images and rename them to unique counter
+from VISO dataset '/voc
 # creating counter for new name of the files .jpg and .txt
 counter = 1
 for folder_name, folder_path in dict_folder.items():
     if os.path.exists(folder_path):
-        print(os.listdir(folder_path))
-        # folder_path = os.path.join(folder_path, 'JPEGImages')
-        video_folder = [os.path.join(folder_path, path, 'img') for path in sorted(os.listdir(folder_path)) if path.endswith('.jpg')]
-        print(video_folder)
-        for video_name in video_folder:
-            images_list = sorted(os.listdir(video_name))
-            images_path = [os.path.join(video_name, image) for image in images_list if image.endswith('.jpg')]
-            print(images_path)
-            for img_path in images_path:
-                if os.path.exists(img_path):
-                    print(img_path)
-                    try: 
-                        new_filename = f"{counter:07d}.jpg"  # Rename files by adding a unique numerical identifier
-                        dst_image_path = os.path.join(output_images_path, folder_name, new_filename)
-                        shutil.copy(img_path, dst_image_path)  
-                        counter += 1
-                    except Exception as e:
-                        print(f"Error moving {file}: {e}") 
-                else:
-                    print('Path doesn`t exist:', img_path)
+        # print(os.listdir(folder_path))
+        folder_path = os.path.join(folder_path, 'JPEGImages')
+        images_list = sorted(os.listdir(folder_path))
+        images_path = [os.path.join(folder_path, path) for path in sorted(os.listdir(folder_path)) if path.endswith('.jpg')]
+        for img_path in images_path:
+            if os.path.exists(img_path):
+                print(img_path)
+                try: 
+                    new_filename = f"{counter:07d}.jpg"  # Rename files by adding a unique numerical identifier
+                    dst_image_path = os.path.join(output_images_path, new_filename)
+                    shutil.copy(img_path, dst_image_path)  
+                    counter += 1
+                except Exception as e:
+                    print(f"Error moving {file}: {e}") 
+            else:
+                print('Path doesn`t exist:', img_path)
     else:
         print('Path doesn`t exist:', folder_path)
-        
-        # frames = [cv2.imread(image) for image in images_path]
-# for image in ground_truths:
-#     for coordinates in image:
-#         break
-#         print(coordinates)
-
-'''Code for moving files'''
-# try:
-#     filename, extension = os.path.splitext(file) 
-    
-#     new_filename = f"{filename}_{counter}{extension}"  # Rename files by adding a unique numerical identifier
-
-#     dst_image_path = os.path.join(dst_folder_path, new_filename)
-    
-#     shutil.move(src_image_path, dst_image_path)  
-#     print(f"Moved {file} from {src_image_path} to {dst_image_path}")
-    
-#     counter += 1
-# except Exception as e:
-#     print(f"Error moving {file}: {e}")
+'''        
