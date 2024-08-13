@@ -57,12 +57,14 @@ voc:
 import os
 # import cv2 
 import shutil
-# from pylabel import importer
+import xml.etree.ElementTree as ET
 
 output_yolo_path = 'yolo_dataset/'
 os.makedirs(output_yolo_path, exist_ok=True)
 output_images_path = os.path.join(output_yolo_path, 'images')
 os.makedirs(output_images_path, exist_ok=True)
+output_labels_path = os.path.join(output_yolo_path, 'labels')
+os.makedirs(output_labels_path, exist_ok=True)
 
 dataset_path = 'voc'
 dict_folder = {
@@ -71,9 +73,9 @@ dict_folder = {
     'ship' : os.path.join(dataset_path, 'ship'),
     'train' : os.path.join(dataset_path, 'train')
 }
+classes = [cls for cls in dict_folder.keys()]
 
-
-''' creating classes.txt file to store object-class from folder-names
+''' creating classes.txt file to store object-class from folder-names'''
 classes_txt_path = os.path.join(output_yolo_path, 'classes.txt')
 
 try: 
@@ -82,11 +84,11 @@ try:
             file.write(key + '\n')
 except Exception as e:
     print(f"An error occurred: {e}")    
-'''
+
 
 
 '''Move images and rename them to unique counter
-from VISO dataset '/voc
+from VISO dataset '/voc'''  
 # creating counter for new name of the files .jpg and .txt
 counter = 1
 for folder_name, folder_path in dict_folder.items():
@@ -109,4 +111,31 @@ for folder_name, folder_path in dict_folder.items():
                 print('Path doesn`t exist:', img_path)
     else:
         print('Path doesn`t exist:', folder_path)
-'''        
+      
+counter = 1
+for folder_name, folder_path in dict_folder.items():
+    if os.path.exists(folder_path):
+        folder_path = os.path.join(folder_path, 'Annotations')
+        annot_names_list = sorted(os.listdir(folder_path))
+        annot_paths = [os.path.join(folder_path, path) for path in sorted(os.listdir(folder_path)) if path.endswith('.xml')]
+
+        for annot_path, annot_name in zip(annot_paths, annot_names_list):
+            in_file = open(annot_path)
+            out_file = open(f'{output_labels_path}/{counter:07d}.txt', 'w')
+            counter +=1
+            tree = ET.parse(in_file)
+            root = tree.getroot()
+            size = root.find('size')
+            w = int(size.find('width').text)
+            h = int(size.find('height').text)
+            for obj in root.iter('object'):
+                difficult = obj.find('difficult').text
+                cls = folder_name
+                cls_id = classes.index(cls)
+                xmlbox = obj.find('bndbox')
+                b = (float(xmlbox.find('xmin').text), float(xmlbox.find('xmax').text), float(xmlbox.find('ymin').text), float(xmlbox.find('ymax').text))
+                bb = (b[0] / w, b[1] / w, b[2] / h, b[3] / h)
+                out_file.write(f"{cls_id} {' '.join([str(a) for a in bb])}\n")
+            in_file.close()
+            out_file.close()
+
