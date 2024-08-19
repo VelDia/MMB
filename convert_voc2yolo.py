@@ -59,12 +59,12 @@ import os
 import shutil
 import xml.etree.ElementTree as ET
 
-output_yolo_path = 'yolo_voc_dataset/'
+output_yolo_path = 'voc_dataset/'
 os.makedirs(output_yolo_path, exist_ok=True)
-output_images_path = os.path.join(output_yolo_path, 'images')
-os.makedirs(output_images_path, exist_ok=True)
-output_labels_path = os.path.join(output_yolo_path, 'labels')
-os.makedirs(output_labels_path, exist_ok=True)
+# output_images_path = os.path.join(output_yolo_path, 'images')
+# os.makedirs(output_images_path, exist_ok=True)
+# output_labels_path = os.path.join(output_yolo_path, 'labels')
+# os.makedirs(output_labels_path, exist_ok=True)
 
 dataset_path = 'voc'
 dict_folder = {
@@ -97,11 +97,11 @@ for folder_name, folder_path in dict_folder.items():
         folder_path_ann = os.path.join(folder_path, 'Annotations')
         for set_name in ['train', 'val', 'test']:
             ids = open(f'{folder_path}/ImageSets/Main/{set_name}.txt').read().strip().split()
-            images_path = [os.path.join(folder_path_img, path+'.jpg') for path in sorted(ids)]
-            annot_path = [os.path.join(folder_path_ann, path+'.xml') for path in sorted(ids)]
+            images_path = [os.path.join(folder_path_img, path + '.jpg') for path in sorted(ids)]
+            annot_path = [os.path.join(folder_path_ann, path + '.xml') for path in sorted(ids)]
             # print(ids)
-            out_path_img = os.path.join(output_images_path, set_name)
-            out_path_annot = os.path.join(output_labels_path, set_name)
+            out_path_img = os.path.join(output_yolo_path, set_name, 'images')
+            out_path_annot = os.path.join(output_yolo_path, set_name, 'labels')
             os.makedirs(out_path_img, exist_ok=True)
             os.makedirs(out_path_annot, exist_ok=True)
             for img_path, annot_path in zip(images_path, annot_path):
@@ -112,15 +112,21 @@ for folder_name, folder_path in dict_folder.items():
                 tree = ET.parse(in_file)
                 root = tree.getroot()
                 size = root.find('size')
-                w = int(size.find('width').text)
-                h = int(size.find('height').text)
+                width = int(size.find('width').text)
+                height = int(size.find('height').text)
                 for obj in root.iter('object'):
                     difficult = obj.find('difficult').text
                     cls = folder_name
                     cls_id = classes.index(cls)
                     xmlbox = obj.find('bndbox')
-                    b = (float(xmlbox.find('xmin').text), float(xmlbox.find('xmax').text), float(xmlbox.find('ymin').text), float(xmlbox.find('ymax').text))
-                    bb = (b[0] / w, b[1] / w, b[2] / h, b[3] / h)
+                    xmin, xmax, ymin, ymax = (float(xmlbox.find('xmin').text), float(xmlbox.find('xmax').text), float(xmlbox.find('ymin').text), float(xmlbox.find('ymax').text))
+                    w = xmax - xmin
+                    h = ymax - ymin
+                    xcentr = xmin + w/2
+                    ycentr = ymin + h/2
+
+                    bb = (xcentr / width, ycentr / height, w / width, h / height)
+
                     out_file.write(f"{cls_id} {' '.join([str(a) for a in bb])}\n")
                 in_file.close()
                 out_file.close()
