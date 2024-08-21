@@ -1,4 +1,4 @@
 classes=4
-train=voc_dataset/train
-test=voc_dataset/test
-names=/home/diana/MMB/voc_dataset/classes.txt
+train=vocrs_dataset/train
+test=vocrs_dataset/test
+names=/home/diana/MMB/vocrs_dataset/classes.txt
