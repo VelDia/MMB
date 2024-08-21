@@ -59,7 +59,7 @@ import os
 import shutil
 import xml.etree.ElementTree as ET
 
-output_yolo_path = 'voc_dataset/'
+output_yolo_path = 'vocrs_dataset/'
 os.makedirs(output_yolo_path, exist_ok=True)
 # output_images_path = os.path.join(output_yolo_path, 'images')
 # os.makedirs(output_images_path, exist_ok=True)
@@ -97,8 +97,8 @@ for folder_name, folder_path in dict_folder.items():
         folder_path_ann = os.path.join(folder_path, 'Annotations')
         for set_name in ['train', 'val', 'test']:
             ids = open(f'{folder_path}/ImageSets/Main/{set_name}.txt').read().strip().split()
-            images_path = [os.path.join(folder_path_img, path + '.jpg') for path in sorted(ids)]
-            annot_path = [os.path.join(folder_path_ann, path + '.xml') for path in sorted(ids)]
+            images_path = [os.path.join(folder_path_img, name + '.jpg') for name in sorted(ids)]
+            annot_path = [os.path.join(folder_path_ann, name + '.xml') for name in sorted(ids)]
             # print(ids)
             out_path_img = os.path.join(output_yolo_path, set_name, 'images')
             out_path_annot = os.path.join(output_yolo_path, set_name, 'labels')
@@ -125,7 +125,7 @@ for folder_name, folder_path in dict_folder.items():
                     xcentr = xmin + w/2
                     ycentr = ymin + h/2
 
-                    bb = (xcentr / width, ycentr / height, w / width, h / height)
+                    bb = (xcentr / width, ycentr / height, w / width, h / height, 0.0) # adding 0.0 for rotation in YOLORS
 
                     out_file.write(f"{cls_id} {' '.join([str(a) for a in bb])}\n")
                 in_file.close()

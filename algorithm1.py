@@ -20,11 +20,12 @@ def convert_to_binary_mask(img):
 
     return mask
 
-def calc_difference_mask (im_path_list):
+def calc_difference_mask (images):
+# def calc_difference_mask (im_path_list):
     # read images
-    images = []
-    for img in im_path_list:
-        images.append(cv2.imread(img, cv2.IMREAD_COLOR))
+    # images = []
+    # for img in im_path_list:
+    #     images.append(cv2.imread(img, cv2.IMREAD_COLOR))
     num = len(images)
     # print(round(num/2)) # Check if the middle image has the intended position
     # Calculate differencing images
@@ -73,7 +74,8 @@ def plot_mask(im_path_list):
 
     plt.show()
 
-def remove_false_alarms_one_image(mask, orig_image, num_im):
+# def remove_false_alarms_one_image(mask, orig_image, num_im):
+def remove_false_alarms_one_image(mask):
     
     # Original parameters
 
@@ -89,10 +91,10 @@ def remove_false_alarms_one_image(mask, orig_image, num_im):
     max_aspect_ratio = 6.0
 
     # Create a copy of the original image to draw bounding boxes
-    output_image = orig_image.copy()
+    # output_image = orig_image.copy()
 
     # List to store extracted ROIs
-    rois = []
+    # rois = []
     new_mask = np.zeros_like(mask, dtype=np.uint8)
 
     # Find connected components
@@ -110,7 +112,7 @@ def remove_false_alarms_one_image(mask, orig_image, num_im):
             # print(f"Label: {label}, Area: {area}, Aspect Ratio: {aspect_ratio:.2f}")
 
             # Example: Draw bounding box
-            cv2.rectangle(output_image, (x, y), (x + width, y + height), (0, 255, 0))
+            # cv2.rectangle(output_image, (x, y), (x + width, y + height), (0, 255, 0))
 
             # cv2.imshow('ROI', output_image)
             # cv2.waitKey(0)
@@ -119,15 +121,17 @@ def remove_false_alarms_one_image(mask, orig_image, num_im):
             # Draw the component on the new mask
             new_mask[labels == label] = 255
 
-            # Extract ROI from original image based on bounding box coordinates
-            roi = orig_image[x:x+width+1, y:y+height+1]
+            # # Extract ROI from original image based on bounding box coordinates
+            # roi = orig_image[x:x+width+1, y:y+height+1]
 
             # Append ROI to list
-            rois.append([int(num_im), int(label), int(x), int(y), int(width), int(height)]) #append coordinates as they appear in (ground truth) gt.txt
+            # rois.append([int(num_im), int(label), int(x), int(y), int(width), int(height)]) #append coordinates as they appear in (ground truth) gt.txt
             # print([int(num_im), int(label), int(x), int(y), int(width), int(height)])
 
     # cv2.destroyAllWindows()
-    return output_image, rois, new_mask
+    # return output_image, rois, new_mask
+    # return rois, new_mask
+    return new_mask
 
 def load_images_from_folder(images_folder):
 
