@@ -1,16 +1,13 @@
 import cv2
 import os
 def convert_folder_to_video(image_folder):
-    video_name = 'output_video.mp4'
+    video_name = os.path.join(image_folder, 'output_video.mp4')
 
     # Get a list of all JPEG files in the specified folder
     images = [img for img in os.listdir(image_folder) if img.endswith(".jpg") or img.endswith(".png")]
     images.sort()
-    print(len(images))
-    print("HEre")
     # Read the first image to get dimensions
     frame = cv2.imread(os.path.join(image_folder, images[0]))
-    print(len(images))
     height, width, layers = frame.shape
     video_path = os.path.join(image_folder, video_name)
     # Initialize the VideoWriter
@@ -49,5 +46,5 @@ def convert_frames_to_video(images):
     # Clean up
     cv2.destroyAllWindows()
 
-folder = '/Users/diana/Desktop/MMB/mot/car/002/img'
+folder = '/Users/diana/Desktop/MMB/yolo_dataset/images'
 convert_folder_to_video(folder)
