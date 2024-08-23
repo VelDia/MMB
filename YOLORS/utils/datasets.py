@@ -84,9 +84,9 @@ class ImageFolder(Dataset):
 #         self.batch_count = 0
 
 class ListDataset(Dataset):
-    def __init__(self, img_folder, label_folder, img_size=512, augment=True, multiscale=True, normalized_labels=True):
-        self.img_folder = img_folder
-        self.label_folder = label_folder
+    def __init__(self, folder, img_size=512, augment=True, multiscale=True, normalized_labels=True):
+        self.img_folder = img_folder = os.path.join(folder, 'images')
+        self.label_folder = label_folder = os.path.join(folder, 'labels')
         self.img_size = img_size
         self.augment = augment
         self.multiscale = multiscale
