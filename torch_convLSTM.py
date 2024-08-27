@@ -2,7 +2,7 @@
 import torch
 from ultralytics import YOLO
 import torch.nn as nn
-from yolov10 import YOLOv10
+from yolov10.ultralytics.models.yolov10.model import YOLOv10
 
 import torch
 import torch.nn as nn
@@ -66,7 +66,7 @@ class YOLOWithConvLSTM(nn.Module):
         return x
 
 # Initialize your YOLO model (assume it's defined elsewhere)
-yolo_model = YOLOv10()
+yolo_model = YOLOv10('/home/diana/MMB/weights/yolov10x.pt')
 
 # Load the pretrained weights
 yolo_model.load_state_dict(torch.load('/home/diana/MMB/weights/yolov10x.pt'))
@@ -146,7 +146,7 @@ transform = transforms.Compose([
     transforms.ToTensor(),
 ])
 
-dataset = YOLODataset(img_folder='vocrs_dataset/train/images', label_folder='vocrs_dataset/train/labels', transform=transform)
+dataset = YOLODataset(img_folder='/home/diana/MMB/vocrs_dataset/train/images', label_folder='/home/diana/MMB/vocrs_dataset/train/labels', transform=transform)
 train_loader = torch.utils.data.DataLoader(dataset, batch_size=4, shuffle=True)
 
 for epoch in range(num_epochs):
