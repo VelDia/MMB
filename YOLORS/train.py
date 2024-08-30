@@ -25,7 +25,7 @@ parser.add_argument('--lr', type=float, default=1e-3, help='initial learning rat
 parser.add_argument('--Alr_type', type=str, default='rop', help='adaptive learning rate type')
 parser.add_argument('--Alr_coef', type=float, default=0.1, help='adaptive learning rate coefficient')
 parser.add_argument('--reg', type=float, default=0.001, help='regularizer')
-parser.add_argument('--n_classes', type=int, default=8, help='number of classes')
+parser.add_argument('--n_classes', type=int, default=4, help='number of classes')
 parser.add_argument('--aug', type=int, default=1, help='online image augmentation')
 parser.add_argument('--pre', type=int, default=0, help='use pre-trained/checkpoint weights as initialization')
 parser.add_argument('--folds', type=int, default=10, help='number of cross-validation folds')
@@ -39,7 +39,7 @@ parser.add_argument('--data_config', type=str, default='config/custom.data', hel
 parser.add_argument('--model_def', type=str, default='config/yolors.cfg', help='path to model definition file')
 parser.add_argument('--pre_path', type=str, default='weights/yolors.weights', help='if specified starts from pre-trained/checkpoint weights')
 parser.add_argument('--multiscale_training', default=False, help='allow for multi-scale training')
-parser.add_argument('--n_cpu', type=int, default=8, help='number of cpu threads to use during batch generation')
+parser.add_argument('--n_cpu', type=int, default=1, help='number of cpu threads to use during batch generation')
 parser.add_argument('--img_size', type=int, default=512, help='size of each image dimension')
 parser.add_argument('--test', type=int, default=0, help='size of each image dimension')
 parser.add_argument('--fusion_type', type=str, default='conc', help='Select fusion type: [conc, xpro, add, sub]')
@@ -119,59 +119,64 @@ for name in opt.mods:
             optimizer.load_state_dict(opt_dict)
             print('\nOptimizer state loaded successfully')
             if opt.Alr_type in ['exp','step','rop']:
-	            sch_dict = torch.load(opt.pre_path.replace('/','/schedulers/'))            
-	            scheduler.load_state_dict(sch_dict)
-	            print('\nScheduler state loaded successfully')
+                sch_dict = torch.load(opt.pre_path.replace('/','/schedulers/'))
+                scheduler.load_state_dict(sch_dict)
+                print('\nScheduler state loaded successfully')
             del opt_dict, sch_dict
             gc.collect()
             torch.cuda.empty_cache()
             
         # Get data configuration
-        # data_config = parse_data_config(opt.data_config)
+        data_config = parse_data_config(opt.data_config)
         # train_path = data_config['train'].split('.')
+        train_path = data_config['train']
+        print(train_path)
         # train_path = train_path[0] + '_fold{}.'.format(f) +  train_path[1]
         # test_path = data_config['test'].split('.')
+        test_path = data_config['test']
+        print(test_path)
         # test_path = test_path[0] + '_fold{}.'.format(f) +  test_path[1]
-        # class_names = load_classes(data_config['names'])
-        # class_names = [class_names[i] for i in range(opt.n_classes)] ### Choosen classes
+        class_names = load_classes(data_config['names'])
+        class_names = [class_names[i] for i in range(opt.n_classes)] ### Choosen classes
         
-        # # Get dataloader
-        # dataset = ListDataset(train_path, augment=bool(opt.aug), multiscale=opt.multiscale_training)
+        # Get dataloader
+        dataset = ListDataset(train_path, augment=bool(opt.aug), multiscale=opt.multiscale_training)
+        dataloader = torch.utils.data.DataLoader(dataset,
+                                                 batch_size=opt.batch_size,
+                                                 shuffle=True,
+                                                 num_workers=opt.n_cpu,
+                                                 pin_memory=True,
+                                                 collate_fn=dataset.collate_fn,)
+        # # Get data configuration
+        # data_config = parse_data_config(opt.data_config)
+        # train_folder = data_config['train']  # Folder containing training images
+        # test_folder = data_config['test']    # Folder containing test images
+        # class_names_path = data_config['names']
+        # train_label_folder = data_config['train']
+        # print(train_label_folder)
+        # # Load class names
+        # class_names = load_classes(class_names_path)
+        # class_names = [class_names[i] for i in range(opt.n_classes)]  # Chosen classes
+
+        # # Initialize datasets
+        # dataset = ListDataset(train_folder, 
+        #                             augment=bool(opt.aug), multiscale=opt.multiscale_training)
+        # # test_dataset = ListDataset(test_folder, label_folder='path/to/test_labels',
+        # #                             augment=False, multiscale=False)
+        # print(len(dataset))
+        # # Create DataLoaders
         # dataloader = torch.utils.data.DataLoader(dataset,
-        #                                          batch_size=opt.batch_size,
-        #                                          shuffle=True,
-        #                                          num_workers=opt.n_cpu,
-        #                                          pin_memory=True,
-        #                                          collate_fn=dataset.collate_fn,)
-        # Get data configuration
-        data_config = parse_data_config(opt.data_config)
-        train_folder = data_config['train']  # Folder containing training images
-        test_folder = data_config['test']    # Folder containing test images
-        class_names_path = data_config['names']
-
-        # Load class names
-        class_names = load_classes(class_names_path)
-        class_names = [class_names[i] for i in range(opt.n_classes)]  # Chosen classes
-
-        # Initialize datasets
-        dataset = ListDataset(train_folder, label_folder='path/to/train_labels',
-                                    augment=bool(opt.aug), multiscale=opt.multiscale_training)
-        test_dataset = ListDataset(test_folder, label_folder='path/to/test_labels',
-                                    augment=False, multiscale=False)
-
-        # Create DataLoaders
-        ataloader = torch.utils.data.DataLoader(dataset,
-                                                    batch_size=opt.batch_size,
-                                                    shuffle=True,
-                                                    num_workers=opt.n_cpu,
-                                                    pin_memory=True,
-                                                    collate_fn=dataset.collate_fn)
-        # test_dataloader = torch.utils.data.DataLoader(test_dataset,
         #                                             batch_size=opt.batch_size,
-        #                                             shuffle=False,
+        #                                             shuffle=True,
         #                                             num_workers=opt.n_cpu,
         #                                             pin_memory=True,
-        #                                             collate_fn=test_dataset.collate_fn)
+        #                                             collate_fn=dataset.collate_fn)
+        # # test_dataloader = torch.utils.data.DataLoader(test_dataset,
+        # #                                             batch_size=opt.batch_size,
+        # #                                             shuffle=False,
+        # #                                             num_workers=opt.n_cpu,
+        # #                                             pin_memory=True,
+        # #                                             collate_fn=test_dataset.collate_fn)
 
         # name_str1 = name_str_old.replace('cv=(','cv=({}-'.format(f)).replace('E=(','E=({}-'.format(0))
         # torch.save(model.state_dict(),'checkpoints/{}.pth'.format(name_str1))
@@ -210,9 +215,12 @@ for name in opt.mods:
                 # print('\n' + str(torch.cuda.memory_allocated(0)/1024**2))
                 # print('\n' + str(torch.cuda.memory_cached(0)/1024**2))
             dft= dft/counter
-            dft0= dft0.append(dft.iloc[[0]],sort=False).reset_index(drop=True)
-            dft1= dft1.append(dft.iloc[[1]],sort=False).reset_index(drop=True)
-            dft2= dft2.append(dft.iloc[[2]],sort=False).reset_index(drop=True)
+            # dft0= dft0.append(dft.iloc[[0]],sort=False).reset_index(drop=True)
+            dft0 = pd.concat([dft0, dft.iloc[[0]]], ignore_index=True)
+            # dft1= dft1.append(dft.iloc[[1]],sort=False).reset_index(drop=True)
+            dft1 = pd.concat([dft1, dft.iloc[[1]]], ignore_index=True)
+            # dft2= dft2.append(dft.iloc[[2]],sort=False).reset_index(drop=True)
+            dft2 = pd.concat([dft2, dft.iloc[[2]]], ignore_index=True)
             if (pre_epoch+epoch+1) % opt.eval_int == 0:
                 print('\n---- Evaluating Model ----')
                 stats,dfv = evaluate(model,
@@ -226,11 +234,15 @@ for name in opt.mods:
                                      epoch= pre_epoch+epoch+1,
                                      device=device,
                                      stat=True)
-                dfv0= dfv0.append(dfv.iloc[[0]],sort=False).reset_index(drop=True)
-                dfv1= dfv1.append(dfv.iloc[[1]],sort=False).reset_index(drop=True)
-                dfv2= dfv2.append(dfv.iloc[[2]],sort=False).reset_index(drop=True)
+                # dft0= dft0.append(dft.iloc[[0]],sort=False).reset_index(drop=True)
+                dft0 = pd.concat([dft0, dft.iloc[[0]]], ignore_index=True)
+                # dft1= dft1.append(dft.iloc[[1]],sort=False).reset_index(drop=True)
+                dft1 = pd.concat([dft1, dft.iloc[[1]]], ignore_index=True)
+                # dft2= dft2.append(dft.iloc[[2]],sort=False).reset_index(drop=True)
+                dft2 = pd.concat([dft2, dft.iloc[[2]]], ignore_index=True)
                 stats['mTrainLoss']= dft['loss'].sum()
-                df = df.append(stats,sort=False).reset_index(drop=True)
+                # df = df.append(stats,sort=False).reset_index(drop=True)
+                df = pd.concat([df, stats], ignore_index=True)
             
             if opt.Alr_type in ['step','exp']:
                 scheduler.step(pre_epoch+epoch+1)
@@ -248,9 +260,10 @@ for name in opt.mods:
             dft0 = dft0.groupby('epoch',as_index=False).mean()
             dft1 = dft1.groupby('epoch',as_index=False).mean()
             dft2 = dft2.groupby('epoch',as_index=False).mean()
-            dfv0 = dfv0.groupby('epoch',as_index=False).mean()
-            dfv1 = dfv1.groupby('epoch',as_index=False).mean()
-            dfv2 = dfv2.groupby('epoch',as_index=False).mean()
+            if opt.pre_path.endswith('.pth'):
+                dfv0 = dfv0.groupby('epoch',as_index=False).mean()
+                dfv1 = dfv1.groupby('epoch',as_index=False).mean()
+                dfv2 = dfv2.groupby('epoch',as_index=False).mean()
             
             try:
                 wb = load_workbook('results/{}.xlsx'.format(name_str))

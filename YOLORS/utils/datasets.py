@@ -84,7 +84,7 @@ class ImageFolder(Dataset):
 #         self.batch_count = 0
 
 class ListDataset(Dataset):
-    def __init__(self, folder, img_size=512, augment=True, multiscale=True, normalized_labels=True):
+    def __init__(self, folder = '/home/diana/MMB/YOLORS/vocrs_dataset/train', img_size=512, augment=True, multiscale=True, normalized_labels=True):
         self.img_folder = img_folder = os.path.join(folder, 'images')
         self.label_folder = label_folder = os.path.join(folder, 'labels')
         self.img_size = img_size
@@ -103,7 +103,7 @@ class ListDataset(Dataset):
         self.max_objects = 100
         self.min_size = self.img_size - 3 * 32
         self.max_size = self.img_size + 3 * 32
-#         self.batch_count = 0
+        self.batch_count = 0
     
     # def __getitem__(self, index):
     #     # Load image and labels as before
@@ -171,8 +171,9 @@ class ListDataset(Dataset):
         # ---------
 
         img_path = self.img_files[index % len(self.img_files)].rstrip()
-        img_path_rgb= img_path.replace('images','images_rgb')
-        img_path_ir= img_path.replace('images','images_ir')
+        # img_path_rgb= img_path.replace('images_rgb','images_rgb')
+        img_path_rgb = img_path
+        img_path_ir= img_path.replace('images_rgb','images_ir')
 
         # img_rgb= Image.open(img_path_rgb)
         # img_ir= Image.open(img_path_ir)
@@ -208,7 +209,7 @@ class ListDataset(Dataset):
         if os.path.exists(label_path):
             boxes = torch.from_numpy(np.loadtxt(label_path).reshape(-1, 6))
             # Extract coordinates for unpadded + unscaled image
-            x1 = w_factor * (boxes[:, 1] - boxes[:, 3] / 2)
+            x1 = w_factor * (boxes[:, 1] - boxes[:, 3] / 2) # taking the central x axis and width divided by 2
             y1 = h_factor * (boxes[:, 2] - boxes[:, 4] / 2)
             x2 = w_factor * (boxes[:, 1] + boxes[:, 3] / 2)
             y2 = h_factor * (boxes[:, 2] + boxes[:, 4] / 2)
@@ -257,3 +258,5 @@ class ListDataset(Dataset):
 
     def __len__(self):
         return len(self.img_files)
+
+anyvar = ListDataset()
