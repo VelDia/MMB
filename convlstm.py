@@ -6,7 +6,7 @@ from tensorflow import keras
 from keras.models import load_model
 
 # Load the pretrained YOLO model
-yolo_model = load_model('yolo_model.h5')
+yolo_model = load_model('/home/diana/MMB/weights/yolov10x.pt')
 
 # Freeze all layers in the YOLO model
 for layer in yolo_model.layers:
@@ -35,9 +35,8 @@ output = Conv2D(filters=num_anchors*(num_classes+5), kernel_size=(1, 1), padding
 # Define the new model
 model = Model(inputs=sequence_input, outputs=output)
 
-
 # Compile the model
-model.compile(optimizer='adam', loss='your_loss_function', metrics=['accuracy'])
+model.compile(optimizer='adam', metrics=['accuracy', 'map'])
 
 # Train the model on your custom dataset
 model.fit(data="/home/diana/MMB/viso.yaml", epochs=10)

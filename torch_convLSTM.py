@@ -66,10 +66,9 @@ class YOLOWithConvLSTM(nn.Module):
         return x
 
 # Initialize your YOLO model (assume it's defined elsewhere)
-yolo_model = YOLOv10('/home/diana/MMB/weights/yolov10x.pt')
-
-# Load the pretrained weights
-yolo_model.load_state_dict(torch.load('/home/diana/MMB/weights/yolov10x.pt'))
+yolo_model = torch.hub.load('yolov10/ultralytics/yolov10', 'yolov10n', classes=4)
+yolo_model.load_state_dict(torch.load('/home/diana/MMB/runs/detect/train8/weights/best.pt')['model'].state_dict())
+# yolo_model = torch.hub.load('ultralytics/yolov5','/home/diana/MMB/runs/detect/train8/weights/best.pt')  # custom trained model
 
 
 # Freeze all layers

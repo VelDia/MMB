@@ -59,7 +59,7 @@ import os
 import shutil
 import xml.etree.ElementTree as ET
 
-output_yolo_path = 'vocrs_dataset/'
+output_yolo_path = 'yolo_trains/'
 os.makedirs(output_yolo_path, exist_ok=True)
 # output_images_path = os.path.join(output_yolo_path, 'images')
 # os.makedirs(output_images_path, exist_ok=True)
@@ -68,10 +68,10 @@ os.makedirs(output_yolo_path, exist_ok=True)
 
 dataset_path = 'voc'
 dict_folder = {
-    'car' : os.path.join(dataset_path, 'car'),
-    'plane' : os.path.join(dataset_path, 'plane'),
-    'ship' : os.path.join(dataset_path, 'ship'),
-    'train' : os.path.join(dataset_path, 'train')
+    # 'car' : os.path.join(dataset_path, 'car'),
+    'plane' : os.path.join(dataset_path, 'plane')
+    # 'ship' : os.path.join(dataset_path, 'ship'),
+    # 'train' : os.path.join(dataset_path, 'train')
 }
 classes = [cls for cls in dict_folder.keys()]
 
@@ -125,7 +125,9 @@ for folder_name, folder_path in dict_folder.items():
                     xcentr = xmin + w/2
                     ycentr = ymin + h/2
 
-                    bb = (xcentr / width, ycentr / height, w / width, h / height, 0.0) # adding 0.0 for rotation in YOLORS
+                    # bb = (xcentr / width, ycentr / height, w / width, h / height, 0.0) # adding 0.0 for rotation in YOLORS
+                    bb = (xcentr / width, ycentr / height, w / width, h / height) # for original YOLO
+
 
                     out_file.write(f"{cls_id} {' '.join([str(a) for a in bb])}\n")
                 in_file.close()

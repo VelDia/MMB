@@ -46,5 +46,5 @@ def convert_frames_to_video(images):
     # Clean up
     cv2.destroyAllWindows()
 
-folder = '/Users/diana/Desktop/MMB/yolo_dataset/images'
+folder = '/home/diana/MMB/vocrs_dataset/test/images/'
 convert_folder_to_video(folder)

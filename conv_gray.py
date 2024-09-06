@@ -53,3 +53,5 @@ for set_name in ['test', 'train', 'val']:
             new_mask = remove_false_alarms_one_image(mask)
             cv2.imwrite(os.path.join(gray_dir, f"{images_list[counter]}"), new_mask)
             counter +=1
+    # rgb_dir = os.path.join(set_loc, 'images_rgb')
+    # os.rename(images_path, rgb_dir)
