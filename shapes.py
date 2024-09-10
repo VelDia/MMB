@@ -1,6 +1,6 @@
 import os
 import cv2
-# dataset_location = 'voc_dataset'
+# dataset_location = 'yolo_cars'
 # print(os.listdir(dataset_location))
 max_width = 0
 max_height = 0
@@ -9,7 +9,7 @@ tmp_height = 0
 # for set_name in ['test', 'train', 'val']:
 #     set_loc = os.path.join(dataset_location, set_name)
     # images_path = os.path.join(set_loc, 'images')
-images_paths = "/home/diana/MMB/voc_dataset/test/images"
+images_paths = "yolo_voc_dataset/test/images"
 images_list = sorted(os.listdir(images_paths))
 images_path = [os.path.join(images_paths, image) for image in images_list if image != '.DS_Store']
 frames = [cv2.imread(image) for image in sorted(images_path)]
@@ -63,29 +63,28 @@ def copy_files(file_list, src_dir, dest_dir):
 
         if os.path.isfile(src_file):
             shutil.copy2(src_file, dest_file)  # Copy file with metadata
-            print(f'Copied {file_name} to {dest_dir}')
         else:
             print(f'{file_name} does not exist in {src_dir}')
 
 # src_dir = images_paths
-# dest_dir_low = '/home/diana/MMB/voc_dataset/low/images'
-# dest_dir_med = '/home/diana/MMB/voc_dataset/med/images'
-# dest_dir_high = '/home/diana/MMB/voc_dataset/high/images'
+# dest_dir_low = 'yolo_cars/low/images'
+# dest_dir_med = 'yolo_cars/med/images'
+# dest_dir_high = 'yolo_cars/high/images'
 
 # copy_files(low_path, src_dir, dest_dir_low)
 # copy_files(med_path, src_dir, dest_dir_med)
 # copy_files(high_path, src_dir, dest_dir_high)
 
-src_dir = "/home/diana/MMB/voc_dataset/test/labels"
-low_path = [l.replace('.jpg', ".txt") for l in low_path]
-med_path = [l.replace('.jpg', ".txt") for l in med_path]
-high_path = [l.replace('.jpg', ".txt") for l in high_path]
+# src_dir = "yolo_cars/test/labels"
+# low_path = [l.replace('.jpg', ".txt") for l in low_path]
+# med_path = [l.replace('.jpg', ".txt") for l in med_path]
+# high_path = [l.replace('.jpg', ".txt") for l in high_path]
 
-dest_dir_low = '/home/diana/MMB/voc_dataset/low/labels'
-dest_dir_med = '/home/diana/MMB/voc_dataset/med/labels'
-dest_dir_high = '/home/diana/MMB/voc_dataset/high/labels'
+# dest_dir_low = 'yolo_cars/low/labels'
+# dest_dir_med = 'yolo_cars/med/labels'
+# dest_dir_high = 'yolo_cars/high/labels'
 
-copy_files(low_path, src_dir, dest_dir_low)
-copy_files(med_path, src_dir, dest_dir_med)
-copy_files(high_path, src_dir, dest_dir_high)
+# copy_files(low_path, src_dir, dest_dir_low)
+# copy_files(med_path, src_dir, dest_dir_med)
+# copy_files(high_path, src_dir, dest_dir_high)
 

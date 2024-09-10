@@ -59,7 +59,7 @@ import os
 import shutil
 import xml.etree.ElementTree as ET
 
-output_yolo_path = 'yolo_trains/'
+output_yolo_path = 'yolo_cars/'
 os.makedirs(output_yolo_path, exist_ok=True)
 # output_images_path = os.path.join(output_yolo_path, 'images')
 # os.makedirs(output_images_path, exist_ok=True)
@@ -68,8 +68,8 @@ os.makedirs(output_yolo_path, exist_ok=True)
 
 dataset_path = 'voc'
 dict_folder = {
-    # 'car' : os.path.join(dataset_path, 'car'),
-    'plane' : os.path.join(dataset_path, 'plane')
+    'car' : os.path.join(dataset_path, 'car')
+    # 'plane' : os.path.join(dataset_path, 'plane')
     # 'ship' : os.path.join(dataset_path, 'ship'),
     # 'train' : os.path.join(dataset_path, 'train')
 }

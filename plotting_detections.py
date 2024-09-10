@@ -3,30 +3,30 @@ import numpy as np
 import cv2
 import os
 
-def read_csv_file_yolo(files, img_width, img_height):
+def read_csv_file_yolo(file_path, img_width, img_height):
     """
     Reads a CSV file and returns a list of bounding boxes.
     Each line is expected to be in the format: xmin,ymin,xmax,ymax
     """
     bounding_boxes = []
-    for file_path in files:
-        with open(file_path, 'r') as file:
-            bb_img =[]
-            for line in file:
-                # Strip leading/trailing whitespace and split the line by spaces
-                parts = line.strip().split()
-                # Convert each part to a float and store it in a list
-                float_list = [float(part) for part in parts]
+    # for file_path in files:
+    with open(file_path, 'r') as file:
+        bb_img =[]
+        for line in file:
+            # Strip leading/trailing whitespace and split the line by spaces
+            parts = line.strip().split()
+            # Convert each part to a float and store it in a list
+            float_list = [float(part) for part in parts]
 
-                _, xcentr, ycentr, height, width = float_list
-                
-                xmax = xcentr + height/2
-                xmin = xcentr - height/2
-                ymax = ycentr + width/2
-                ymin = ycentr - width/2
-                
-                bb_img.append([xmin*img_width, ymin*img_height, xmax*img_width, ymax*img_height])
-        bounding_boxes.append(bb_img)
+            _, xcentr, ycentr, height, width = float_list
+            
+            xmax = xcentr + height/2
+            xmin = xcentr - height/2
+            ymax = ycentr + width/2
+            ymin = ycentr - width/2
+            
+            bb_img.append([xmin*img_width, ymin*img_height, xmax*img_width, ymax*img_height])
+    bounding_boxes.append(bb_img)
 
     return bounding_boxes
 
@@ -78,7 +78,7 @@ def read_csv_file(file_path):
             bb_img.append([xmin, ymin, xmax, ymax])
             
     return bounding_boxes
-
+'''
 gt_path = 'mot/car/001/gt/gt.txt'
 ground_truths = read_csv_file(gt_path)
 ground_truths = np.array(ground_truths, dtype=object)
@@ -141,4 +141,4 @@ cv2.imshow('ROI', image)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
-
+'''
