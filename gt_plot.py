@@ -1,4 +1,4 @@
-from plotting_detections import read_csv_file_alg2
+from plotting_detections import read_csv_file_yolo
 import os
 import numpy as np
 import cv2
@@ -10,10 +10,10 @@ width, height, _ = image.shape
 
 gt_path_low_txt = "/home/diana/MMB/voc_dataset/train/labels/000001.txt"
 
-gt = read_csv_file_alg2(gt_path_low_txt)
-print(gt[0][0])
+gt = read_csv_file_yolo(gt_path_low_txt, width, height)
 gt = np.array(gt[0][0], dtype=list)
 gt_xmin, gt_ymin, gt_xmax, gt_ymax = map(int, gt)
+
 cv2.rectangle(image, (gt_xmin, gt_ymin), (gt_xmax, gt_ymax), (0, 255, 0),3)
 
 cv2.imshow('ROI', image)
